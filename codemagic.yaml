@@ -1,0 +1,33 @@
+workflows:
+  ios-swiftui-workflow:
+    name: Mon Jardin iOS Build Workflow
+    max_build_duration: 60
+    instance_type: mac_mini_m1
+    environment:
+      ios_signing:
+        distribution_type: ad_hoc
+        bundle_identifier: com.monjardin.app
+      vars:
+        XCODE_WORKSPACE: "MonJardin.xcodeproj"
+        XCODE_SCHEME: "MonJardin"
+      xcode: 15.4
+      cocoapods: default
+    scripts:
+      - name: Inspect project structure
+        script: |
+          ls -la
+          xcodebuild -list -project MonJardin.xcodeproj
+      - name: Build iOS Application (Simulator & Release)
+        script: |
+          xcodebuild build \
+            -project MonJardin.xcodeproj \
+            -scheme MonJardin \
+            -sdk iphonesimulator \
+            -configuration Release \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/Products/**/*.app
+      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/Products/**/*.dSYM

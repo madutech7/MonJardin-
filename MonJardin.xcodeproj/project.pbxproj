@@ -1,0 +1,378 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BB000001 /* MonJardinApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000001 /* MonJardinApp.swift */; };
+		BB000003 /* Planting.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000003 /* Planting.swift */; };
+		BB000004 /* PlantSpecies.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000004 /* PlantSpecies.swift */; };
+		BB000005 /* GardenLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000005 /* GardenLog.swift */; };
+		BB000006 /* SampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000006 /* SampleData.swift */; };
+		BB000007 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000007 /* MainTabView.swift */; };
+		BB000008 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000008 /* DashboardView.swift */; };
+		BB000009 /* GardenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000009 /* GardenView.swift */; };
+		BB000010 /* PlantingDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000010 /* PlantingDetailView.swift */; };
+		BB000011 /* AddPlantingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000011 /* AddPlantingView.swift */; };
+		BB000012 /* PlantCatalogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000012 /* PlantCatalogView.swift */; };
+		BB000013 /* CareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000013 /* CareView.swift */; };
+		BB000014 /* StatCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000014 /* StatCardView.swift */; };
+		BB000015 /* GerminationProgressGauge.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000015 /* GerminationProgressGauge.swift */; };
+		BB000016 /* StatusBadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000016 /* StatusBadgeView.swift */; };
+		BB000017 /* PlantingRowCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000017 /* PlantingRowCard.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		CC000001 /* MonJardin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MonJardin.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA000001 /* MonJardinApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonJardinApp.swift; sourceTree = "<group>"; };
+		AA000002 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AA000003 /* Planting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Planting.swift; sourceTree = "<group>"; };
+		AA000004 /* PlantSpecies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantSpecies.swift; sourceTree = "<group>"; };
+		AA000005 /* GardenLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GardenLog.swift; sourceTree = "<group>"; };
+		AA000006 /* SampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleData.swift; sourceTree = "<group>"; };
+		AA000007 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		AA000008 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		AA000009 /* GardenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GardenView.swift; sourceTree = "<group>"; };
+		AA000010 /* PlantingDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantingDetailView.swift; sourceTree = "<group>"; };
+		AA000011 /* AddPlantingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPlantingView.swift; sourceTree = "<group>"; };
+		AA000012 /* PlantCatalogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantCatalogView.swift; sourceTree = "<group>"; };
+		AA000013 /* CareView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CareView.swift; sourceTree = "<group>"; };
+		AA000014 /* StatCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatCardView.swift; sourceTree = "<group>"; };
+		AA000015 /* GerminationProgressGauge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GerminationProgressGauge.swift; sourceTree = "<group>"; };
+		AA000016 /* StatusBadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBadgeView.swift; sourceTree = "<group>"; };
+		AA000017 /* PlantingRowCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantingRowCard.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		DD000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		FF000001 = {
+			isa = PBXGroup;
+			children = (
+				FF000002 /* MonJardin */,
+				FF000003 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		FF000002 /* MonJardin */ = {
+			isa = PBXGroup;
+			children = (
+				AA000001 /* MonJardinApp.swift */,
+				AA000002 /* Info.plist */,
+				GG000001 /* Models */,
+				GG000002 /* Views */,
+			);
+			path = MonJardin;
+			sourceTree = "<group>";
+		};
+		GG000001 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				AA000003 /* Planting.swift */,
+				AA000004 /* PlantSpecies.swift */,
+				AA000005 /* GardenLog.swift */,
+				AA000006 /* SampleData.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		GG000002 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				AA000007 /* MainTabView.swift */,
+				GG000003 /* Dashboard */,
+				GG000004 /* Garden */,
+				GG000005 /* Catalog */,
+				GG000006 /* Care */,
+				GG000007 /* Components */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		GG000003 /* Dashboard */ = {
+			isa = PBXGroup;
+			children = (
+				AA000008 /* DashboardView.swift */,
+			);
+			path = Dashboard;
+			sourceTree = "<group>";
+		};
+		GG000004 /* Garden */ = {
+			isa = PBXGroup;
+			children = (
+				AA000009 /* GardenView.swift */,
+				AA000010 /* PlantingDetailView.swift */,
+				AA000011 /* AddPlantingView.swift */,
+			);
+			path = Garden;
+			sourceTree = "<group>";
+		};
+		GG000005 /* Catalog */ = {
+			isa = PBXGroup;
+			children = (
+				AA000012 /* PlantCatalogView.swift */,
+			);
+			path = Catalog;
+			sourceTree = "<group>";
+		};
+		GG000006 /* Care */ = {
+			isa = PBXGroup;
+			children = (
+				AA000013 /* CareView.swift */,
+			);
+			path = Care;
+			sourceTree = "<group>";
+		};
+		GG000007 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				AA000014 /* StatCardView.swift */,
+				AA000015 /* GerminationProgressGauge.swift */,
+				AA000016 /* StatusBadgeView.swift */,
+				AA000017 /* PlantingRowCard.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		FF000003 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CC000001 /* MonJardin.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		EE000001 /* MonJardin */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = HH000001 /* Build configuration list for PBXNativeTarget "MonJardin" */;
+			buildPhases = (
+				DD000002 /* Sources */,
+				DD000001 /* Frameworks */,
+				DD000003 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MonJardin;
+			productName = MonJardin;
+			productReference = CC000001 /* MonJardin.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		JJ000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					EE000001 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = HH000002 /* Build configuration list for PBXProject "MonJardin" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = fr;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				fr,
+				Base,
+			);
+			mainGroup = FF000001;
+			productRefGroup = FF000003 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				EE000001 /* MonJardin */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		DD000003 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		DD000002 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BB000001 /* MonJardinApp.swift in Sources */,
+				BB000003 /* Planting.swift in Sources */,
+				BB000004 /* PlantSpecies.swift in Sources */,
+				BB000005 /* GardenLog.swift in Sources */,
+				BB000006 /* SampleData.swift in Sources */,
+				BB000007 /* MainTabView.swift in Sources */,
+				BB000008 /* DashboardView.swift in Sources */,
+				BB000009 /* GardenView.swift in Sources */,
+				BB000010 /* PlantingDetailView.swift in Sources */,
+				BB000011 /* AddPlantingView.swift in Sources */,
+				BB000012 /* PlantCatalogView.swift in Sources */,
+				BB000013 /* CareView.swift in Sources */,
+				BB000014 /* StatCardView.swift in Sources */,
+				BB000015 /* GerminationProgressGauge.swift in Sources */,
+				BB000016 /* StatusBadgeView.swift in Sources */,
+				BB000017 /* PlantingRowCard.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		II000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = MonJardin/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.monjardin.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		II000002 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = MonJardin/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.monjardin.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		II000003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		II000004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		HH000001 /* Build configuration list for PBXNativeTarget "MonJardin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				II000001 /* Debug */,
+				II000002 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		HH000002 /* Build configuration list for PBXProject "MonJardin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				II000003 /* Debug */,
+				II000004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = JJ000001 /* Project object */;
+}

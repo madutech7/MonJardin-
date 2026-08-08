@@ -24,21 +24,9 @@ public struct MainTabView: View {
 
             Color.clear
                 .tabItem {
-                    Label("Nouveau", systemImage: "plus.circle.fill")
+                    Label("Nouveau Semis", systemImage: "plus.circle.fill")
                 }
                 .tag(2)
-
-            PlantCatalogView()
-                .tabItem {
-                    Label("Catalogue", systemImage: "square.grid.2x2.fill")
-                }
-                .tag(3)
-
-            CareView()
-                .tabItem {
-                    Label("Soins", systemImage: "drop.fill")
-                }
-                .tag(4)
         }
         .tint(Color.emeraldGreen)
         .onChange(of: selectedTab) { _, newValue in

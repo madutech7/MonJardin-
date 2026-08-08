@@ -28,11 +28,17 @@ public struct MainTabView: View {
                 }
                 .tag(2)
 
-            PhotoGalleryView()
+            PlantCatalogView()
                 .tabItem {
-                    Label("Galerie Photos", systemImage: "photo.on.rectangle.angled")
+                    Label("Catalogue", systemImage: "books.vertical.fill")
                 }
                 .tag(3)
+
+            CareView()
+                .tabItem {
+                    Label("Soins", systemImage: "drop.fill")
+                }
+                .tag(4)
         }
         .accentColor(Color(red: 16/255, green: 185/255, blue: 129/255))
         .onChange(of: selectedTab) { _, newValue in

@@ -17,6 +17,17 @@ public struct PlantingDetailView: View {
             VStack(spacing: 20) {
                 // Main Info Card
                 VStack(spacing: 16) {
+                    // Photo si disponible
+                    if let photoData = planting.initialPhotoData,
+                       let uiImage = UIImage(data: photoData) {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 200)
+                            .clipShape(RoundedRectangle(cornerRadius: 14))
+                    }
+
                     HStack {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(planting.name)

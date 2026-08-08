@@ -3,34 +3,46 @@ import SwiftData
 
 public struct MainTabView: View {
     @Environment(\.modelContext) private var modelContext
+    @State private var showingAddSheet = false
+    @State private var selectedTab = 0
 
     public init() {}
 
     public var body: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
             DashboardView()
                 .tabItem {
-                    Label("Tableau de bord", systemImage: "square.grid.2x2.fill")
+                    Label("Accueil", systemImage: "leaf.fill")
                 }
+                .tag(0)
 
             GardenView()
                 .tabItem {
-                    Label("Mon Jardin", systemImage: "sprout.fill")
+                    Label("Mes Plantes", systemImage: "sprout.fill")
                 }
+                .tag(1)
 
-            PlantCatalogView()
+            Color.clear
                 .tabItem {
-                    Label("Catalogue", systemImage: "book.closed.fill")
+                    Label("Nouveau Semis", systemImage: "plus.circle.fill")
                 }
+                .tag(2)
 
-            CareView()
+            PhotoGalleryView()
                 .tabItem {
-                    Label("Arrosage", systemImage: "drop.fill")
+                    Label("Galerie Photos", systemImage: "photo.on.rectangle.angled")
                 }
+                .tag(3)
         }
-        .accentColor(.emeraldGreen)
-        .onAppear {
-            SampleData.populate(context: modelContext)
+        .accentColor(Color(red: 16/255, green: 185/255, blue: 129/255))
+        .onChange(of: selectedTab) { _, newValue in
+            if newValue == 2 {
+                showingAddSheet = true
+                selectedTab = 0
+            }
+        }
+        .sheet(isPresented: $showingAddSheet) {
+            AddPlantingView()
         }
     }
 }

@@ -1,40 +1,36 @@
 import Foundation
 import SwiftData
 
-/// Étape de développement de la plantation
+/// Étapes clés du cycle de vie de la plante de la graine aux fruits
 public enum PlantingStatus: String, Codable, CaseIterable {
     case sown = "Semé"
-    case germinated = "Germé"
+    case sprouted = "Premières pousses"
     case growing = "En croissance"
-    case harvesting = "En récolte"
-    case completed = "Terminé"
+    case flowering = "Floraison"
+    case fruiting = "Premiers fruits"
+    case harvested = "Récolté"
 
     public var systemIcon: String {
         switch self {
         case .sown: return "circle.dotted"
-        case .germinated: return "sprout.fill"
+        case .sprouted: return "leaf.arrow.triangle.circlepath"
         case .growing: return "leaf.fill"
-        case .harvesting: return "basket.fill"
-        case .completed: return "checkmark.circle.fill"
+        case .flowering: return "sparkles"
+        case .fruiting: return "square.stack.3d.up.fill"
+        case .harvested: return "checkmark.circle.fill"
         }
     }
 }
 
-/// Modèle SwiftData principal pour une plantation dans le jardin
+/// Modèle SwiftData local pour enregistrer et suivre une plantation
 @Model
 public final class Planting {
     public var id: UUID
-    public var customName: String
-    public var speciesName: String
-    public var category: String
-    public var bedName: String // ex: Potager Sud, Serre, Balcon
+    public var name: String
+    public var locationName: String
     public var statusRaw: String
     public var sownDate: Date
-    public var expectedGerminationDate: Date
-    public var actualGerminationDate: Date?
-    public var expectedHarvestDate: Date?
-    public var wateringIntervalDays: Int
-    public var lastWateredDate: Date
+    public var expectedGerminationDays: Int?
     public var notes: String
     public var initialPhotoData: Data?
 
@@ -43,33 +39,21 @@ public final class Planting {
 
     public init(
         id: UUID = UUID(),
-        customName: String,
-        speciesName: String,
-        category: String = "Légume",
-        bedName: String = "Potager Princpal",
+        name: String,
+        locationName: String = "Jardin",
         status: PlantingStatus = .sown,
         sownDate: Date = Date(),
-        expectedGerminationDate: Date,
-        actualGerminationDate: Date? = nil,
-        expectedHarvestDate: Date? = nil,
-        wateringIntervalDays: Int = 2,
-        lastWateredDate: Date = Date(),
+        expectedGerminationDays: Int? = nil,
         notes: String = "",
         initialPhotoData: Data? = nil,
         logs: [GardenLog] = []
     ) {
         self.id = id
-        self.customName = customName
-        self.speciesName = speciesName
-        self.category = category
-        self.bedName = bedName
+        self.name = name
+        self.locationName = locationName
         self.statusRaw = status.rawValue
         self.sownDate = sownDate
-        self.expectedGerminationDate = expectedGerminationDate
-        self.actualGerminationDate = actualGerminationDate
-        self.expectedHarvestDate = expectedHarvestDate
-        self.wateringIntervalDays = wateringIntervalDays
-        self.lastWateredDate = lastWateredDate
+        self.expectedGerminationDays = expectedGerminationDays
         self.notes = notes
         self.initialPhotoData = initialPhotoData
         self.logs = logs
@@ -82,28 +66,7 @@ public final class Planting {
 
     /// Nombre de jours écoulés depuis le semis
     public var daysSinceSown: Int {
-        Calendar.current.dateComponents([.day], from: sownDate, to: Date()).day ?? 0
-    }
-
-    /// Jours restants avant l'estimation de germination
-    public var daysRemainingUntilGermination: Int {
-        let remaining = Calendar.current.dateComponents([.day], from: Date(), to: expectedGerminationDate).day ?? 0
-        return max(0, remaining)
-    }
-
-    /// Progression de la germination (valeur entre 0.0 et 1.0)
-    public var germinationProgress: Double {
-        let totalDuration = expectedGerminationDate.timeIntervalSince(sownDate)
-        guard totalDuration > 0 else { return 1.0 }
-        let elapsed = Date().timeIntervalSince(sownDate)
-        return min(1.0, max(0.0, elapsed / totalDuration))
-    }
-
-    /// Indique si la plante nécessite un arrosage aujourd'hui
-    public var needsWateringToday: Bool {
-        guard let nextWatering = Calendar.current.date(byAdding: .day, value: wateringIntervalDays, to: lastWateredDate) else {
-            return false
-        }
-        return Date() >= nextWatering
+        let components = Calendar.current.dateComponents([.day], from: sownDate, to: Date())
+        return max(0, components.day ?? 0)
     }
 }

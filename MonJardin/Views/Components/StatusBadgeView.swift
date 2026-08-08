@@ -10,10 +10,11 @@ public struct StatusBadgeView: View {
     private var badgeColor: Color {
         switch status {
         case .sown: return .orange
-        case .germinated: return .green
-        case .growing: return .emeraldGreen
-        case .harvesting: return .purple
-        case .completed: return .blue
+        case .sprouted: return .green
+        case .growing: return Color(red: 16/255, green: 185/255, blue: 129/255)
+        case .flowering: return .pink
+        case .fruiting: return .purple
+        case .harvested: return .blue
         }
     }
 

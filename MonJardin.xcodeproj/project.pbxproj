@@ -23,6 +23,7 @@
 		BB000015 /* GerminationProgressGauge.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000015 /* GerminationProgressGauge.swift */; };
 		BB000016 /* StatusBadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000016 /* StatusBadgeView.swift */; };
 		BB000017 /* PlantingRowCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000017 /* PlantingRowCard.swift */; };
+		BB000018 /* PhotoGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000018 /* PhotoGalleryView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +45,7 @@
 		AA000015 /* GerminationProgressGauge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GerminationProgressGauge.swift; sourceTree = "<group>"; };
 		AA000016 /* StatusBadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBadgeView.swift; sourceTree = "<group>"; };
 		AA000017 /* PlantingRowCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantingRowCard.swift; sourceTree = "<group>"; };
+		AA000018 /* PhotoGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoGalleryView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -237,6 +239,7 @@
 				BB000015 /* GerminationProgressGauge.swift in Sources */,
 				BB000016 /* StatusBadgeView.swift in Sources */,
 				BB000017 /* PlantingRowCard.swift in Sources */,
+				BB000018 /* PhotoGalleryView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

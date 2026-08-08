@@ -12,12 +12,10 @@ public struct GardenView: View {
     private var filteredPlantings: [Planting] {
         plantings.filter { planting in
             let matchesSearch = searchText.isEmpty ||
-                planting.customName.localizedCaseInsensitiveContains(searchText) ||
-                planting.speciesName.localizedCaseInsensitiveContains(searchText) ||
-                planting.bedName.localizedCaseInsensitiveContains(searchText)
+                planting.name.localizedCaseInsensitiveContains(searchText) ||
+                planting.locationName.localizedCaseInsensitiveContains(searchText)
 
             let matchesStatus = selectedStatusFilter == nil || planting.status == selectedStatusFilter
-
             return matchesSearch && matchesStatus
         }
     }
@@ -25,7 +23,7 @@ public struct GardenView: View {
     public var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                // Status Filter Pill Bar
+                // Filter Pill Bar
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
                         FilterPill(title: "Tous", isSelected: selectedStatusFilter == nil) {
@@ -43,14 +41,14 @@ public struct GardenView: View {
                 }
                 .background(Color(uiColor: .secondarySystemGroupedBackground))
 
-                // Plantings List / Grid
+                // List
                 if filteredPlantings.isEmpty {
                     VStack(spacing: 16) {
                         Spacer()
-                        Image(systemName: "magnifyingglass")
+                        Image(systemName: "leaf.fill")
                             .font(.system(size: 40))
                             .foregroundColor(.secondary)
-                        Text("Aucune plantation trouvée")
+                        Text("Aucune plantation dans cette catégorie")
                             .font(.headline)
                             .foregroundColor(.secondary)
                         Spacer()
@@ -60,10 +58,7 @@ public struct GardenView: View {
                         LazyVStack(spacing: 12) {
                             ForEach(filteredPlantings) { planting in
                                 NavigationLink(value: planting) {
-                                    PlantingRowCard(planting: planting) {
-                                        planting.lastWateredDate = Date()
-                                        try? modelContext.save()
-                                    }
+                                    PlantingRowCard(planting: planting)
                                 }
                                 .buttonStyle(PlainButtonStyle())
                             }
@@ -72,8 +67,8 @@ public struct GardenView: View {
                     }
                 }
             }
-            .navigationTitle("Mon Jardin")
-            .searchable(text: $searchText, prompt: "Chercher une plante ou un potager...")
+            .navigationTitle("Mes Plantations")
+            .searchable(text: $searchText, prompt: "Rechercher une plante...")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button(action: { showingAddSheet = true }) {
@@ -88,25 +83,6 @@ public struct GardenView: View {
                 AddPlantingView()
             }
             .background(Color(uiColor: .systemGroupedBackground))
-        }
-    }
-}
-
-struct FilterPill: View {
-    let title: String
-    let isSelected: Bool
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            Text(title)
-                .font(.subheadline)
-                .fontWeight(isSelected ? .bold : .medium)
-                .padding(.horizontal, 14)
-                .padding(.vertical, 8)
-                .background(isSelected ? Color.emeraldGreen : Color(uiColor: .tertiarySystemFill))
-                .foregroundColor(isSelected ? .white : .primary)
-                .clipShape(Capsule())
         }
     }
 }

@@ -1,89 +1,71 @@
 import SwiftUI
 import SwiftData
+import PhotosUI
 
 public struct AddPlantingView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
 
-    @Query(sort: \PlantSpecies.name) private var catalogSpecies: [PlantSpecies]
-
-    @State private var selectedSpecies: PlantSpecies?
-    @State private var customName: String = ""
-    @State private var bedName: String = "Potager Princpal"
+    @State private var plantName: String = ""
+    @State private var locationName: String = "Potager"
     @State private var sownDate: Date = Date()
-    @State private var wateringIntervalDays: Int = 2
     @State private var notes: String = ""
+    @State private var selectedPhotoItem: PhotosPickerItem?
+    @State private var selectedPhotoData: Data?
 
-    private let availableBeds = ["Potager Principal", "Potager Sud", "Serre Chaude", "Jardinière Balcon", "Pot d'Intérieur", "Bac à Fleurs"]
-
-    private var calculatedGerminationDate: Date {
-        let minDays = selectedSpecies?.minGerminationDays ?? 7
-        return Calendar.current.date(byAdding: .day, value: minDays, to: sownDate) ?? sownDate
-    }
+    private let defaultLocations = ["Potager", "Balcon", "Serre", "Jardinière", "Pots d'intérieur"]
 
     public var body: some View {
         NavigationStack {
             Form {
-                Section("Sélection de l'Espèce") {
-                    Picker("Plante à semer", selection: $selectedSpecies) {
-                        Text("Sélectionnez dans le catalogue").tag(PlantSpecies?.none)
-                        ForEach(catalogSpecies) { species in
-                            HStack {
-                                Text(species.name)
-                                Spacer()
-                                Text(species.category).foregroundColor(.secondary)
-                            }
-                            .tag(PlantSpecies?.some(species))
-                        }
-                    }
-                    .onChange(of: selectedSpecies) { _, newSpecies in
-                        if let species = newSpecies, customName.isEmpty {
-                            customName = species.name
-                            wateringIntervalDays = species.defaultWateringDays
-                        }
-                    }
+                Section("Informations de la Plante") {
+                    TextField("Nom de la plante (ex: Tomates Marmande)", text: $plantName)
 
-                    TextField("Nom personnalisé (ex: Mes Radis 18j)", text: $customName)
+                    Picker("Emplacement", selection: $locationName) {
+                        ForEach(defaultLocations, id: \.self) { loc in
+                            Text(loc).tag(loc)
+                        }
+                    }
                 }
 
-                Section("Emplacement & Dates") {
-                    Picker("Emplacement du semis", selection: $bedName) {
-                        ForEach(availableBeds, id: \.self) { bed in
-                            Text(bed).tag(bed)
-                        }
-                    }
+                Section("Date de Semis") {
+                    DatePicker("Date du semis", selection: $sownDate, in: ...Date(), displayedComponents: .date)
+                }
 
-                    DatePicker("Date de semis", selection: $sownDate, displayedComponents: .date)
-
-                    if let species = selectedSpecies {
+                Section("Photo Initiale (Optionnel)") {
+                    PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
                         HStack {
-                            Text("Germination estimée")
+                            Image(systemName: "photo.on.rectangle")
+                                .foregroundColor(.green)
+                            Text(selectedPhotoData == nil ? "Ajouter une photo du semis" : "Changer la photo")
                             Spacer()
-                            Text("~\(species.minGerminationDays) à \(species.maxGerminationDays) jours")
-                                .foregroundColor(.orange)
-                                .fontWeight(.semibold)
+                            if selectedPhotoData != nil {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundColor(.green)
+                            }
+                        }
+                    }
+                    .onChange(of: selectedPhotoItem) { _, newItem in
+                        Task {
+                            if let data = try? await newItem?.loadTransferable(type: Data.self) {
+                                selectedPhotoData = data
+                            }
                         }
                     }
 
-                    Stepper("Arrosage tous les \(wateringIntervalDays) jours", value: $wateringIntervalDays, in: 1...7)
+                    if let photoData = selectedPhotoData, let uiImage = UIImage(data: photoData) {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(height: 160)
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .padding(.vertical, 4)
+                    }
                 }
 
-                Section("Conseils de culture & Notes") {
-                    if let species = selectedSpecies {
-                        VStack(alignment: .leading, spacing: 6) {
-                            Text("Astuce pour \(species.name) :")
-                                .font(.caption)
-                                .fontWeight(.bold)
-                                .foregroundColor(.emeraldGreen)
-                            Text(species.careTips)
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
-                        .padding(.vertical, 4)
-                    }
-
-                    TextField("Notes de semis (ex: substrat, terreau...)", text: $notes, axis: .vertical)
-                        .lineLimit(2...4)
+                Section("Notes & Remarques") {
+                    TextField("Notes (ex: graines bio, terreau terreau léger...)", text: $notes, axis: .vertical)
+                        .lineLimit(3...6)
                 }
             }
             .navigationTitle("Nouveau Semis")
@@ -93,39 +75,31 @@ public struct AddPlantingView: View {
                     Button("Annuler") { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Créer Semis") {
+                    Button("Enregistrer") {
                         savePlanting()
                     }
-                    .disabled(customName.trimmingCharacters(in: .whitespaces).isEmpty)
-                }
-            }
-            .onAppear {
-                if selectedSpecies == nil, let first = catalogSpecies.first {
-                    selectedSpecies = first
-                    customName = first.name
-                    wateringIntervalDays = first.defaultWateringDays
+                    .disabled(plantName.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
             }
         }
     }
 
     private func savePlanting() {
-        let speciesName = selectedSpecies?.name ?? "Inconnu"
-        let category = selectedSpecies?.category ?? "Légume"
-
         let newPlanting = Planting(
-            customName: customName,
-            speciesName: speciesName,
-            category: category,
-            bedName: bedName,
+            name: plantName,
+            locationName: locationName,
             status: .sown,
             sownDate: sownDate,
-            expectedGerminationDate: calculatedGerminationDate,
-            wateringIntervalDays: wateringIntervalDays,
-            notes: notes
+            notes: notes,
+            initialPhotoData: selectedPhotoData
         )
 
-        let initialLog = GardenLog(timestamp: sownDate, noteText: "Semis mis en terre le \(sownDate.formatted(date: .abbreviated, time: .omitted)).")
+        let initialLog = GardenLog(
+            timestamp: sownDate,
+            stageName: "Semé",
+            noteText: "Semis mis en terre.",
+            photoData: selectedPhotoData
+        )
         newPlanting.logs.append(initialLog)
 
         modelContext.insert(newPlanting)

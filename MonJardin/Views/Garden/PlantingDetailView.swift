@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import PhotosUI
 
 public struct PlantingDetailView: View {
     @Environment(\.modelContext) private var modelContext
@@ -7,7 +8,9 @@ public struct PlantingDetailView: View {
 
     @State private var showingAddLogSheet = false
     @State private var newLogNote = ""
-    @State private var newLogHeight: String = ""
+    @State private var selectedStage: PlantingStatus = .sprouted
+    @State private var logPhotoItem: PhotosPickerItem?
+    @State private var logPhotoData: Data?
 
     private var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
@@ -19,65 +22,54 @@ public struct PlantingDetailView: View {
     public var body: some View {
         ScrollView {
             VStack(spacing: 20) {
-                // Header Hero Card
+                // Header Card
                 VStack(spacing: 16) {
-                    GerminationProgressGauge(
-                        progress: planting.germinationProgress,
-                        daysRemaining: planting.daysRemainingUntilGermination,
-                        status: planting.status
-                    )
+                    ZStack {
+                        Circle()
+                            .fill(Color.green.opacity(0.15))
+                            .frame(width: 80, height: 80)
 
-                    VStack(spacing: 4) {
-                        Text(planting.customName)
-                            .font(.system(size: 26, weight: .bold, design: .rounded))
+                        if let photoData = planting.initialPhotoData, let uiImage = UIImage(data: photoData) {
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 80, height: 80)
+                                .clipShape(Circle())
+                        } else {
+                            Image(systemName: planting.status.systemIcon)
+                                .font(.system(size: 36, weight: .bold))
+                                .foregroundColor(Color(red: 16/255, green: 185/255, blue: 129/255))
+                        }
+                    }
 
-                        Text("\(planting.speciesName) • \(planting.bedName)")
+                    VStack(spacing: 6) {
+                        Text(planting.name)
+                            .font(.system(size: 28, weight: .bold, design: .rounded))
+
+                        Text(planting.locationName)
                             .font(.subheadline)
                             .foregroundColor(.secondary)
 
                         StatusBadgeView(status: planting.status)
-                            .padding(.top, 4)
+                            .padding(.top, 2)
                     }
 
-                    // Action Controls
-                    HStack(spacing: 12) {
-                        Button(action: {
-                            planting.lastWateredDate = Date()
-                            try? modelContext.save()
-                        }) {
+                    // Advancement Button
+                    if planting.status != .harvested {
+                        Button(action: advanceStage) {
                             HStack {
-                                Image(systemName: "drop.fill")
-                                Text("Arroser")
+                                Image(systemName: "arrow.up.circle.fill")
+                                Text(nextStageButtonTitle)
                             }
                             .font(.subheadline.weight(.semibold))
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 12)
-                            .background(Color.blue)
+                            .background(Color(red: 16/255, green: 185/255, blue: 129/255))
                             .foregroundColor(.white)
                             .cornerRadius(12)
                         }
-
-                        if planting.status == .sown {
-                            Button(action: {
-                                planting.status = .germinated
-                                planting.actualGerminationDate = Date()
-                                planting.logs.append(GardenLog(noteText: "Germination confirmée aujourd'hui ! 🌱"))
-                                try? modelContext.save()
-                            }) {
-                                HStack {
-                                    Image(systemName: "sprout.fill")
-                                    Text("Germé !")
-                                }
-                                .font(.subheadline.weight(.semibold))
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 12)
-                                .background(Color.emeraldGreen)
-                                .foregroundColor(.white)
-                                .cornerRadius(12)
-                            }
-                        }
+                        .padding(.horizontal)
                     }
-                    .padding(.horizontal)
                 }
                 .padding()
                 .frame(maxWidth: .infinity)
@@ -88,31 +80,47 @@ public struct PlantingDetailView: View {
                 )
                 .padding(.horizontal)
 
-                // Key Information Grid
-                VStack(alignment: .leading, spacing: 14) {
-                    Text("Dates & Calendrier")
+                // Sowing Details
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Informations du Semis")
                         .font(.headline)
 
-                    VStack(spacing: 10) {
-                        InfoRow(icon: "calendar", title: "Date de semis", value: dateFormatter.string(from: planting.sownDate))
-                        InfoRow(
-                            icon: "timer",
-                            title: "Germination estimée",
-                            value: dateFormatter.string(from: planting.expectedGerminationDate)
-                        )
-                        if let germDate = planting.actualGerminationDate {
-                            InfoRow(icon: "checkmark.circle.fill", title: "Germé le", value: dateFormatter.string(from: germDate))
+                    VStack(spacing: 8) {
+                        HStack {
+                            Image(systemName: "calendar")
+                                .foregroundColor(.green)
+                            Text("Date de semis")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                            Spacer()
+                            Text(dateFormatter.string(from: planting.sownDate))
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
                         }
-                        InfoRow(
-                            icon: "drop",
-                            title: "Dernier arrosage",
-                            value: dateFormatter.string(from: planting.lastWateredDate)
-                        )
-                        InfoRow(
-                            icon: "repeat",
-                            title: "Fréquence d'arrosage",
-                            value: "Tous les \(planting.wateringIntervalDays) jours"
-                        )
+
+                        HStack {
+                            Image(systemName: "hourglass")
+                                .foregroundColor(.orange)
+                            Text("Temps écoulé")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                            Spacer()
+                            Text("\(planting.daysSinceSown) jour(s)")
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
+                        }
+
+                        if !planting.notes.isEmpty {
+                            Divider()
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("Remarques :")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                Text(planting.notes)
+                                    .font(.subheadline)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        }
                     }
                 }
                 .padding()
@@ -122,50 +130,56 @@ public struct PlantingDetailView: View {
                 )
                 .padding(.horizontal)
 
-                // Notes & Journal Timeline
+                // Growth Photo Timeline
                 VStack(alignment: .leading, spacing: 14) {
                     HStack {
-                        Text("Journal de bord & Photos")
+                        Text("Suivi Photos & Étapes 📸")
                             .font(.headline)
                         Spacer()
                         Button(action: { showingAddLogSheet = true }) {
-                            Label("Note/Photo", systemImage: "plus")
+                            Label("Ajouter photo", systemImage: "plus")
                                 .font(.subheadline)
+                                .fontWeight(.semibold)
                         }
                     }
 
                     if planting.logs.isEmpty {
-                        Text("Aucune note dans le journal pour le moment.")
+                        Text("Aucune photo ou observation pour l'instant.")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                             .padding(.vertical, 8)
                     } else {
-                        VStack(spacing: 12) {
+                        VStack(spacing: 16) {
                             ForEach(planting.logs.sorted(by: { $0.timestamp > $1.timestamp })) { log in
-                                VStack(alignment: .leading, spacing: 6) {
+                                VStack(alignment: .leading, spacing: 10) {
                                     HStack {
+                                        Text(log.stageName)
+                                            .font(.subheadline)
+                                            .fontWeight(.bold)
+                                            .foregroundColor(Color(red: 16/255, green: 185/255, blue: 129/255))
+                                        Spacer()
                                         Text(dateFormatter.string(from: log.timestamp))
                                             .font(.caption)
-                                            .fontWeight(.bold)
-                                            .foregroundColor(.emeraldGreen)
-                                        Spacer()
-                                        if let height = log.heightCm {
-                                            Text("Taille: \(String(format: "%.1f", height)) cm")
-                                                .font(.caption2)
-                                                .padding(.horizontal, 6)
-                                                .padding(.vertical, 2)
-                                                .background(Color.gray.opacity(0.15))
-                                                .cornerRadius(6)
-                                        }
+                                            .foregroundColor(.secondary)
                                     }
 
-                                    Text(log.noteText)
-                                        .font(.subheadline)
+                                    if let photoData = log.photoData, let uiImage = UIImage(data: photoData) {
+                                        Image(uiImage: uiImage)
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(maxHeight: 220)
+                                            .clipShape(RoundedRectangle(cornerRadius: 14))
+                                    }
+
+                                    if !log.noteText.isEmpty {
+                                        Text(log.noteText)
+                                            .font(.subheadline)
+                                            .foregroundColor(.primary)
+                                    }
                                 }
-                                .padding(12)
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(14)
                                 .background(Color(uiColor: .tertiarySystemGroupedBackground))
-                                .cornerRadius(12)
+                                .cornerRadius(16)
                             }
                         }
                     }
@@ -179,20 +193,54 @@ public struct PlantingDetailView: View {
             }
             .padding(.vertical)
         }
-        .navigationTitle(planting.customName)
+        .navigationTitle(planting.name)
         .navigationBarTitleDisplayMode(.inline)
         .background(Color(uiColor: .systemGroupedBackground).ignoresSafeArea())
         .sheet(isPresented: $showingAddLogSheet) {
             NavigationStack {
                 Form {
-                    Section("Nouvelle Observation") {
-                        TextField("Notes (ex: premières feuilles vives...)", text: $newLogNote, axis: .vertical)
-                            .lineLimit(3...6)
-                        TextField("Taille en cm (optionnel)", text: $newLogHeight)
-                            .keyboardType(.decimalPad)
+                    Section("Étape & Photo") {
+                        Picker("Étape courante", selection: $selectedStage) {
+                            ForEach(PlantingStatus.allCases, id: \.self) { status in
+                                Text(status.rawValue).tag(status)
+                            }
+                        }
+
+                        PhotosPicker(selection: $logPhotoItem, matching: .images) {
+                            HStack {
+                                Image(systemName: "photo")
+                                    .foregroundColor(.green)
+                                Text(logPhotoData == nil ? "Sélectionner une photo" : "Changer la photo")
+                                Spacer()
+                                if logPhotoData != nil {
+                                    Image(systemName: "checkmark.circle.fill")
+                                        .foregroundColor(.green)
+                                }
+                            }
+                        }
+                        .onChange(of: logPhotoItem) { _, newItem in
+                            Task {
+                                if let data = try? await newItem?.loadTransferable(type: Data.self) {
+                                    logPhotoData = data
+                                }
+                            }
+                        }
+
+                        if let data = logPhotoData, let uiImage = UIImage(data: data) {
+                            Image(uiImage: uiImage)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(height: 160)
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                        }
+                    }
+
+                    Section("Commentaire") {
+                        TextField("Observations (ex: premières feuilles bien vertes...)", text: $newLogNote, axis: .vertical)
+                            .lineLimit(3...5)
                     }
                 }
-                .navigationTitle("Ajouter au Journal")
+                .navigationTitle("Nouveau Suivi Photo")
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {
@@ -200,39 +248,51 @@ public struct PlantingDetailView: View {
                     }
                     ToolbarItem(placement: .confirmationAction) {
                         Button("Enregistrer") {
-                            let heightVal = Double(newLogHeight)
-                            let log = GardenLog(noteText: newLogNote, heightCm: heightVal)
-                            planting.logs.append(log)
+                            let newLog = GardenLog(
+                                timestamp: Date(),
+                                stageName: selectedStage.rawValue,
+                                noteText: newLogNote,
+                                photoData: logPhotoData
+                            )
+                            planting.logs.append(newLog)
+                            planting.status = selectedStage
                             try? modelContext.save()
+
                             newLogNote = ""
-                            newLogHeight = ""
+                            logPhotoData = nil
+                            logPhotoItem = nil
                             showingAddLogSheet = false
                         }
-                        .disabled(newLogNote.isEmpty)
                     }
                 }
             }
         }
     }
-}
 
-struct InfoRow: View {
-    let icon: String
-    let title: String
-    let value: String
-
-    var body: some View {
-        HStack {
-            Image(systemName: icon)
-                .foregroundColor(.emeraldGreen)
-                .frame(width: 24)
-            Text(title)
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-            Spacer()
-            Text(value)
-                .font(.subheadline)
-                .fontWeight(.medium)
+    private var nextStageButtonTitle: String {
+        switch planting.status {
+        case .sown: return "Marquer les Premières Pousses 🌱"
+        case .sprouted: return "Passer en Croissance 🌿"
+        case .growing: return "Marquer la Floraison 🌸"
+        case .flowering: return "Marquer les Premiers Fruits 🍅"
+        case .fruiting: return "Marquer la Récolte 🧺"
+        case .harvested: return "Terminé"
         }
+    }
+
+    private func advanceStage() {
+        let nextStatus: PlantingStatus
+        switch planting.status {
+        case .sown: nextStatus = .sprouted
+        case .sprouted: nextStatus = .growing
+        case .growing: nextStatus = .flowering
+        case .flowering: nextStatus = .fruiting
+        case .fruiting: nextStatus = .harvested
+        case .harvested: return
+        }
+
+        planting.status = nextStatus
+        planting.logs.append(GardenLog(timestamp: Date(), stageName: nextStatus.rawValue, noteText: "Passage à l'étape \(nextStatus.rawValue)."))
+        try? modelContext.save()
     }
 }

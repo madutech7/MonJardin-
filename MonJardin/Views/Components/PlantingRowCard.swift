@@ -2,12 +2,6 @@ import SwiftUI
 
 public struct PlantingRowCard: View {
     let planting: Planting
-    let onWaterTap: () -> Void
-
-    public init(planting: Planting, onWaterTap: @escaping () -> Void) {
-        self.planting = planting
-        self.onWaterTap = onWaterTap
-    }
 
     private var dateFormatter: DateFormatter {
         let formatter = DateFormatter()
@@ -18,70 +12,52 @@ public struct PlantingRowCard: View {
 
     public var body: some View {
         HStack(spacing: 14) {
-            // Mini photo or icon placeholder
+            // Photo thumbnail or default native leaf icon
             ZStack {
                 RoundedRectangle(cornerRadius: 14, style: .continuous)
                     .fill(Color.green.opacity(0.12))
-                    .frame(width: 54, height: 54)
+                    .frame(width: 56, height: 56)
 
                 if let photoData = planting.initialPhotoData, let uiImage = UIImage(data: photoData) {
                     Image(uiImage: uiImage)
                         .resizable()
                         .scaledToFill()
-                        .frame(width: 54, height: 54)
+                        .frame(width: 56, height: 56)
                         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
                 } else {
-                    Image(systemName: planting.status.systemIcon)
+                    Image(systemName: "leaf.fill")
                         .font(.title2)
-                        .foregroundColor(.emeraldGreen)
+                        .foregroundColor(Color(red: 16/255, green: 185/255, blue: 129/255))
                 }
             }
 
-            // Info details
+            // Plant Info
             VStack(alignment: .leading, spacing: 4) {
                 HStack {
-                    Text(planting.customName)
+                    Text(planting.name)
                         .font(.headline)
                         .foregroundColor(.primary)
                     Spacer()
                     StatusBadgeView(status: planting.status)
                 }
 
-                Text("\(planting.speciesName) • \(planting.bedName)")
+                Text(planting.locationName)
                     .font(.caption)
                     .foregroundColor(.secondary)
 
-                HStack(spacing: 12) {
-                    Label("Semé le \(dateFormatter.string(from: planting.sownDate))", systemicon: "calendar")
+                HStack(spacing: 8) {
+                    Image(systemName: "calendar")
                         .font(.caption2)
                         .foregroundColor(.secondary)
-
-                    if planting.status == .sown {
-                        Text("•")
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                        Text("Germination ~\(planting.daysRemainingUntilGermination)j")
-                            .font(.caption2)
-                            .fontWeight(.semibold)
-                            .foregroundColor(.orange)
-                    }
+                    Text("Semé le \(dateFormatter.string(from: planting.sownDate)) (\(planting.daysSinceSown)j)")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
                 }
             }
 
-            Spacer()
-
-            // Quick Water Action Button
-            Button(action: onWaterTap) {
-                ZStack {
-                    Circle()
-                        .fill(planting.needsWateringToday ? Color.blue.opacity(0.15) : Color.gray.opacity(0.08))
-                        .frame(width: 38, height: 38)
-                    Image(systemName: planting.needsWateringToday ? "drop.fill" : "drop")
-                        .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(planting.needsWateringToday ? .blue : .secondary)
-                }
-            }
-            .buttonStyle(PlainButtonStyle())
+            Image(systemName: "chevron.right")
+                .font(.caption)
+                .foregroundColor(.secondary)
         }
         .padding(12)
         .background(
@@ -89,15 +65,5 @@ public struct PlantingRowCard: View {
                 .fill(Color(uiColor: .secondarySystemGroupedBackground))
                 .shadow(color: Color.black.opacity(0.03), radius: 6, x: 0, y: 3)
         )
-    }
-}
-
-extension Label where Title == Text, Icon == Image {
-    init(_ titleKey: String, systemicon: String) {
-        self.init {
-            Text(titleKey)
-        } icon: {
-            Image(systemName: systemicon)
-        }
     }
 }

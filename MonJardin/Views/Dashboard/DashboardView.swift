@@ -6,18 +6,6 @@ public struct DashboardView: View {
     @Query(sort: \Planting.sownDate, order: .reverse) private var plantings: [Planting]
     @State private var showingAddPlanting = false
 
-    private var activePlantings: [Planting] {
-        plantings.filter { $0.status != .completed }
-    }
-
-    private var germinationWatchlist: [Planting] {
-        plantings.filter { $0.status == .sown }
-    }
-
-    private var needsWaterCount: Int {
-        plantings.filter { $0.needsWateringToday }.count
-    }
-
     private var formattedDate: String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "fr_FR")
@@ -25,11 +13,19 @@ public struct DashboardView: View {
         return formatter.string(from: Date()).capitalized
     }
 
+    private var activeCount: Int {
+        plantings.filter { $0.status != .harvested }.count
+    }
+
+    private var fruitingCount: Int {
+        plantings.filter { $0.status == .fruiting }.count
+    }
+
     public var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 22) {
-                    // Header greeting & date
+                VStack(alignment: .leading, spacing: 20) {
+                    // Title & Date Header
                     VStack(alignment: .leading, spacing: 4) {
                         Text(formattedDate)
                             .font(.subheadline)
@@ -41,133 +37,80 @@ public struct DashboardView: View {
                     }
                     .padding(.horizontal)
 
-                    // Stats Grid
+                    // Stat Cards
                     HStack(spacing: 12) {
                         StatCardView(
-                            title: "Plantations",
-                            value: "\(activePlantings.count)",
-                            subtitle: "Actives",
+                            title: "Semis & Plantes",
+                            value: "\(plantings.count)",
+                            subtitle: "Total enregistré",
                             icon: "leaf.fill",
-                            color: .emeraldGreen
+                            color: Color(red: 16/255, green: 185/255, blue: 129/255)
                         )
 
                         StatCardView(
-                            title: "Germination",
-                            value: "\(germinationWatchlist.count)",
-                            subtitle: "En cours",
-                            icon: "sprout.fill",
-                            color: .orange
-                        )
-
-                        StatCardView(
-                            title: "Arrosage",
-                            value: "\(needsWaterCount)",
-                            subtitle: "Requis aujourd'hui",
-                            icon: "drop.fill",
-                            color: .blue
+                            title: "Premiers Fruits",
+                            value: "\(fruitingCount)",
+                            subtitle: "En fructification",
+                            icon: "square.stack.3d.up.fill",
+                            color: .purple
                         )
                     }
                     .padding(.horizontal)
 
-                    // Germination Watchlist Section
-                    if !germinationWatchlist.isEmpty {
-                        VStack(alignment: .leading, spacing: 14) {
-                            HStack {
-                                Label("Suivi Germination", systemImage: "timer")
-                                    .font(.title3)
-                                    .fontWeight(.bold)
-                                Spacer()
-                                Text("\(germinationWatchlist.count) semis")
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
-                            }
-                            .padding(.horizontal)
-
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                HStack(spacing: 14) {
-                                    ForEach(germinationWatchlist) { planting in
-                                        NavigationLink(value: planting) {
-                                            VStack(spacing: 10) {
-                                                GerminationProgressGauge(
-                                                    progress: planting.germinationProgress,
-                                                    daysRemaining: planting.daysRemainingUntilGermination,
-                                                    status: planting.status
-                                                )
-                                                Text(planting.customName)
-                                                    .font(.subheadline)
-                                                    .fontWeight(.semibold)
-                                                    .foregroundColor(.primary)
-                                                    .lineLimit(1)
-                                                Text(planting.speciesName)
-                                                    .font(.caption2)
-                                                    .foregroundColor(.secondary)
-                                            }
-                                            .padding(14)
-                                            .frame(width: 140)
-                                            .background(
-                                                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                                                    .fill(Color(uiColor: .secondarySystemGroupedBackground))
-                                                    .shadow(color: Color.black.opacity(0.04), radius: 8, x: 0, y: 4)
-                                            )
-                                        }
-                                        .buttonStyle(PlainButtonStyle())
-                                    }
-                                }
-                                .padding(.horizontal)
-                            }
-                        }
-                    }
-
-                    // Active Plantings Overview
+                    // Plant List Section
                     VStack(alignment: .leading, spacing: 14) {
                         HStack {
-                            Text("Derniers Semis & Plantations")
+                            Text("Mes Plantations")
                                 .font(.title3)
                                 .fontWeight(.bold)
                             Spacer()
                             Button(action: { showingAddPlanting = true }) {
-                                Label("Ajouter", systemImage: "plus.circle.fill")
+                                Label("Nouveau Semis", systemImage: "plus.circle.fill")
                                     .font(.subheadline)
-                                    .fontWeight(.semibold)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(Color(red: 16/255, green: 185/255, blue: 129/255))
                             }
                         }
                         .padding(.horizontal)
 
-                        if activePlantings.isEmpty {
-                            VStack(spacing: 12) {
-                                Image(systemName: "sprout")
-                                    .font(.system(size: 44))
-                                    .foregroundColor(.emeraldGreen.opacity(0.6))
-                                Text("Aucune plantation pour le moment")
+                        if plantings.isEmpty {
+                            VStack(spacing: 14) {
+                                Image(systemName: "sprout.fill")
+                                    .font(.system(size: 48))
+                                    .foregroundColor(Color(red: 16/255, green: 185/255, blue: 129/255).opacity(0.7))
+                                Text("Votre jardin est prêt")
                                     .font(.headline)
-                                Text("Commencez par ajouter votre premier semis !")
+                                Text("Commencez par ajouter votre tout premier semis avec la date et le nom de votre plante.")
                                     .font(.caption)
                                     .foregroundColor(.secondary)
+                                    .multilineTextAlignment(.center)
+                                    .padding(.horizontal)
+
                                 Button(action: { showingAddPlanting = true }) {
-                                    Text("Nouveau Semis")
-                                        .fontWeight(.semibold)
-                                        .padding(.horizontal, 20)
-                                        .padding(.vertical, 10)
-                                        .background(Color.emeraldGreen)
-                                        .foregroundColor(.white)
-                                        .cornerRadius(12)
+                                    HStack {
+                                        Image(systemName: "plus")
+                                        Text("Ajouter mon premier semis")
+                                    }
+                                    .fontWeight(.semibold)
+                                    .padding(.horizontal, 20)
+                                    .padding(.vertical, 12)
+                                    .background(Color(red: 16/255, green: 185/255, blue: 129/255))
+                                    .foregroundColor(.white)
+                                    .cornerRadius(12)
                                 }
                             }
                             .frame(maxWidth: .infinity)
-                            .padding(.vertical, 30)
+                            .padding(.vertical, 40)
                             .background(
-                                RoundedRectangle(cornerRadius: 18)
+                                RoundedRectangle(cornerRadius: 20)
                                     .fill(Color(uiColor: .secondarySystemGroupedBackground))
                             )
                             .padding(.horizontal)
                         } else {
                             VStack(spacing: 10) {
-                                ForEach(activePlantings.prefix(5)) { planting in
+                                ForEach(plantings) { planting in
                                     NavigationLink(value: planting) {
-                                        PlantingRowCard(planting: planting) {
-                                            planting.lastWateredDate = Date()
-                                            try? modelContext.save()
-                                        }
+                                        PlantingRowCard(planting: planting)
                                     }
                                     .buttonStyle(PlainButtonStyle())
                                 }

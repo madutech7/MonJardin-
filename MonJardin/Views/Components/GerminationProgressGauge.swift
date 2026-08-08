@@ -11,46 +11,44 @@ public struct GerminationProgressGauge: View {
         self.status = status
     }
 
+    private var ringColor: Color {
+        daysRemaining <= 0 ? .orange : .green
+    }
+
     public var body: some View {
         ZStack {
-            // Background Track
+            // Background track
             Circle()
-                .stroke(Color.primary.opacity(0.08), lineWidth: 8)
+                .stroke(ringColor.opacity(0.15), lineWidth: 8)
 
-            // Progress Ring
+            // Progress ring
             Circle()
                 .trim(from: 0, to: status == .sown ? CGFloat(progress) : 1.0)
-                .stroke(
-                    daysRemaining <= 0 ? Color.orange : Color.green,
-                    style: StrokeStyle(lineWidth: 8, lineCap: .round)
-                )
+                .stroke(ringColor, style: StrokeStyle(lineWidth: 8, lineCap: .round))
                 .rotationEffect(.degrees(-90))
-                .animation(.easeInOut, value: progress)
+                .animation(.easeOut(duration: 0.6), value: progress)
 
-            // Center Content
-            VStack(spacing: 2) {
+            // Center label
+            VStack(spacing: 1) {
                 if status == .sown {
                     if daysRemaining <= 0 {
-                        Image(systemName: "exclamationmark.circle.fill")
-                            .font(.system(size: 22, weight: .semibold))
+                        Image(systemName: "exclamationmark")
+                            .font(.system(size: 20, weight: .bold))
                             .foregroundStyle(.orange)
                     } else {
                         Text("\(daysRemaining)")
-                            .font(.system(size: 24, weight: .bold, design: .rounded))
-                            .foregroundStyle(.primary)
-                        
-                        Text(daysRemaining <= 1 ? "jour" : "jours")
-                            .font(.system(size: 9, weight: .medium))
+                            .font(.system(size: 22, weight: .bold, design: .rounded))
+                        Text("j")
+                            .font(.system(size: 10, weight: .medium))
                             .foregroundStyle(.secondary)
                             .textCase(.uppercase)
                     }
                 } else {
-                    Image(systemName: "checkmark.circle.fill")
-                        .font(.system(size: 24, weight: .semibold))
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 20, weight: .bold))
                         .foregroundStyle(.green)
                 }
             }
         }
-        .frame(width: 80, height: 80)
     }
 }

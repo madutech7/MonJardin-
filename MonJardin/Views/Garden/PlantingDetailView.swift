@@ -14,7 +14,7 @@ public struct PlantingDetailView: View {
 
     public var body: some View {
         List {
-            // Photo Section
+            // ── Photo Hero ──
             if let photoData = planting.initialPhotoData,
                let uiImage = UIImage(data: photoData) {
                 Section {
@@ -23,112 +23,126 @@ public struct PlantingDetailView: View {
                         .scaledToFill()
                         .frame(height: 220)
                         .frame(maxWidth: .infinity)
-                        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                         .listRowInsets(EdgeInsets())
                 }
                 .listRowBackground(Color.clear)
             }
 
-            // Overview Section
+            // ── Informations ──
             Section("Informations") {
-                LabeledContent("Nom", value: planting.name)
                 LabeledContent("Emplacement", value: planting.locationName)
-                LabeledContent("Date de semis", value: planting.sownDate.formatted(date: .long, time: .omitted))
-                
-                Picker("Statut actuel", selection: Binding(
+                LabeledContent("Semé le", value: planting.sownDate.formatted(date: .long, time: .omitted))
+                LabeledContent("Jours depuis semis", value: "\(planting.daysSinceSown)")
+
+                Picker("Statut", selection: Binding(
                     get: { planting.status },
                     set: { planting.status = $0 }
                 )) {
-                    ForEach(PlantingStatus.allCases, id: \.self) { status in
-                        Text(status.rawValue).tag(status)
+                    ForEach(PlantingStatus.allCases, id: \.self) { s in
+                        Text(s.rawValue).tag(s)
                     }
                 }
             }
 
-            // Germination Progress Section (if sown)
+            // ── Germination ──
             if planting.status == .sown {
-                Section("Progression de germination") {
-                    HStack(spacing: 20) {
+                Section("Germination") {
+                    HStack(spacing: 16) {
                         GerminationProgressGauge(
                             progress: planting.germinationProgress,
                             daysRemaining: planting.daysRemainingUntilGermination,
                             status: planting.status
                         )
-                        
+                        .frame(width: 80, height: 80)
+
                         VStack(alignment: .leading, spacing: 6) {
                             let days = planting.daysRemainingUntilGermination
-                            Text(days <= 0 ? "Germination imminente !" : "\(days) jours restants")
+                            Text(days <= 0 ? "Germination imminente" : "\(days) jours restants")
                                 .font(.headline)
-                                .foregroundStyle(days <= 0 ? .orange : .primary)
-                            
-                            Text("Semé le \(planting.sownDate.formatted(date: .abbreviated, time: .omitted))")
+
+                            Text("\(Int(planting.germinationProgress * 100))% de progression")
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
-                            
+
                             Button {
                                 planting.status = .sprouted
                             } label: {
-                                Label("Confirmer la levée", systemImage: "checkmark.circle.fill")
+                                Text("Confirmer la levée")
                                     .font(.subheadline)
                                     .fontWeight(.semibold)
                             }
                             .buttonStyle(.borderedProminent)
                             .tint(.green)
-                            .padding(.top, 4)
+                            .controlSize(.small)
+                            .padding(.top, 2)
                         }
                     }
                     .padding(.vertical, 8)
                 }
             }
 
-            // Journal / Notes Section
-            Section {
-                if planting.logs.isEmpty {
-                    Text("Aucune note enregistrée.")
+            // ── Notes ──
+            if !planting.notes.isEmpty {
+                Section("Notes") {
+                    Text(planting.notes)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
+                }
+            }
+
+            // ── Journal ──
+            Section {
+                if planting.logs.isEmpty {
+                    HStack {
+                        Spacer()
+                        VStack(spacing: 8) {
+                            Image(systemName: "text.book.closed")
+                                .font(.title2)
+                                .foregroundStyle(.tertiary)
+                            Text("Aucune entrée")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(.vertical, 20)
+                        Spacer()
+                    }
                 } else {
                     ForEach(planting.logs.sorted(by: { $0.timestamp > $1.timestamp })) { log in
-                        VStack(alignment: .leading, spacing: 6) {
+                        VStack(alignment: .leading, spacing: 4) {
                             HStack {
                                 Text(log.stageName)
                                     .font(.caption)
                                     .fontWeight(.semibold)
                                     .foregroundStyle(.green)
-                                
                                 Spacer()
-                                
                                 Text(log.timestamp.formatted(date: .abbreviated, time: .shortened))
                                     .font(.caption2)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(.tertiary)
                             }
-                            
                             if !log.noteText.isEmpty {
                                 Text(log.noteText)
                                     .font(.subheadline)
-                                    .foregroundStyle(.primary)
                             }
                         }
-                        .padding(.vertical, 4)
+                        .padding(.vertical, 2)
                     }
                 }
             } header: {
                 HStack {
-                    Text("Journal de suivi")
+                    Text("Journal")
                     Spacer()
-                    Button {
-                        showingAddLogSheet = true
-                    } label: {
+                    Button { showingAddLogSheet = true } label: {
                         Image(systemName: "plus")
-                            .font(.subheadline)
-                            .fontWeight(.semibold)
+                            .font(.caption)
+                            .fontWeight(.bold)
                     }
                 }
             }
         }
         .listStyle(.insetGrouped)
         .navigationTitle(planting.name)
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarTitleDisplayMode(.large)
         .sheet(isPresented: $showingAddLogSheet) {
             NavigationStack {
                 Form {
@@ -150,6 +164,7 @@ public struct PlantingDetailView: View {
                             newLogNote = ""
                             showingAddLogSheet = false
                         }
+                        .fontWeight(.semibold)
                         .disabled(newLogNote.trimmingCharacters(in: .whitespaces).isEmpty)
                     }
                 }

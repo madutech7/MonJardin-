@@ -1,8 +1,21 @@
 import SwiftUI
 import SwiftData
 
+// MARK: - Shared Color Palette
 public extension Color {
     static let emeraldGreen = Color(red: 16/255, green: 185/255, blue: 129/255)
+}
+
+// MARK: - Conditional Glass Modifier
+extension View {
+    @ViewBuilder
+    func applyGlassEffect() -> some View {
+        if #available(iOS 26.0, *) {
+            self.glassEffect()
+        } else {
+            self
+        }
+    }
 }
 
 public struct MainTabView: View {
@@ -28,7 +41,7 @@ public struct MainTabView: View {
 
             Color.clear
                 .tabItem {
-                    Label("Nouveau Semis", systemImage: "plus.circle.fill")
+                    Label("Nouveau", systemImage: "plus.circle.fill")
                 }
                 .tag(2)
         }

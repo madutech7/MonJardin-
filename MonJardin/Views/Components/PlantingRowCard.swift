@@ -8,54 +8,70 @@ public struct PlantingRowCard: View {
     }
 
     public var body: some View {
-        HStack(spacing: 14) {
-            // Thumbnail or system icon
-            ZStack {
+        HStack(spacing: 12) {
+            // Leading: Photo thumbnail or icon
+            Group {
                 if let data = planting.initialPhotoData, let img = UIImage(data: data) {
                     Image(uiImage: img)
                         .resizable()
                         .scaledToFill()
-                        .frame(width: 44, height: 44)
-                        .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                        .frame(width: 48, height: 48)
+                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                 } else {
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .fill(Color.green.opacity(0.12))
-                        .frame(width: 44, height: 44)
-                    
-                    Image(systemName: planting.status.systemIcon)
-                        .font(.system(size: 20, weight: .medium))
-                        .foregroundStyle(.green)
-                }
-            }
-
-            VStack(alignment: .leading, spacing: 3) {
-                Text(planting.name)
-                    .font(.body)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.primary)
-
-                HStack(spacing: 6) {
-                    Text(planting.locationName)
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-
-                    if planting.status == .sown {
-                        Text("•")
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
-
-                        let days = planting.daysRemainingUntilGermination
-                        Text(days <= 0 ? "Germination imminente" : "\(days) j restants")
-                            .font(.footnote)
-                            .foregroundStyle(days <= 0 ? .orange : .secondary)
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .fill(statusColor.opacity(0.12))
+                            .frame(width: 48, height: 48)
+                        Image(systemName: planting.status.systemIcon)
+                            .font(.system(size: 20))
+                            .foregroundStyle(statusColor)
                     }
                 }
             }
 
+            // Center: Title + subtitle
+            VStack(alignment: .leading, spacing: 3) {
+                Text(planting.name)
+                    .font(.body)
+                    .foregroundStyle(.primary)
+
+                HStack(spacing: 4) {
+                    Text(planting.locationName)
+
+                    if planting.status == .sown {
+                        let days = planting.daysRemainingUntilGermination
+                        Text("·")
+                        Text(days <= 0 ? "Germination imminente" : "\(days)j restants")
+                            .foregroundStyle(days <= 0 ? .orange : .secondary)
+                    }
+                }
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            }
+
             Spacer()
 
-            StatusBadgeView(status: planting.status)
+            // Trailing: Status capsule
+            Text(planting.status.rawValue)
+                .font(.caption2)
+                .fontWeight(.medium)
+                .foregroundStyle(statusColor)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .background(statusColor.opacity(0.12), in: Capsule())
         }
-        .padding(.vertical, 4)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
+    }
+
+    private var statusColor: Color {
+        switch planting.status {
+        case .sown:      return .orange
+        case .sprouted:  return .green
+        case .growing:   return .blue
+        case .flowering: return .pink
+        case .fruiting:  return .purple
+        case .harvested: return .secondary
+        }
     }
 }

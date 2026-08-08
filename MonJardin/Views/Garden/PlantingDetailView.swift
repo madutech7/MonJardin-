@@ -96,7 +96,7 @@ public struct PlantingDetailView: View {
                                 Button(action: {
                                     planting.status = .sprouted
                                 }) {
-                                    Label("Confirmer les Premières Pousses 🌿", systemImage: "checkmark.circle.fill")
+                                    Label("Confirmer les Premières Pousses", systemImage: "checkmark.circle.fill")
                                         .font(.headline)
                                         .foregroundStyle(.white)
                                         .frame(maxWidth: .infinity)
@@ -108,38 +108,21 @@ public struct PlantingDetailView: View {
                             .padding(.vertical, 4)
                         }
 
-                        // Action Buttons
-                        HStack(spacing: 12) {
-                            Button(action: {
-                                planting.lastWateredDate = Date()
-                            }) {
-                                HStack {
-                                    Image(systemName: "drop.fill")
-                                    Text("Arroser")
-                                }
-                                .font(.headline)
-                                .foregroundStyle(.white)
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 14)
-                                .background(Color.blue.gradient, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-                                .shadow(color: .blue.opacity(0.3), radius: 8, y: 4)
+                        // Status Menu
+                        Menu {
+                            ForEach(PlantingStatus.allCases, id: \.self) { s in
+                                Button(s.rawValue) { planting.status = s }
                             }
-
-                            Menu {
-                                ForEach(PlantingStatus.allCases, id: \.self) { s in
-                                    Button(s.rawValue) { planting.status = s }
-                                }
-                            } label: {
-                                HStack {
-                                    Image(systemName: "arrow.triangle.2.circlepath")
-                                    Text("Statut")
-                                }
-                                .font(.headline)
-                                .foregroundStyle(Color.orange)
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 14)
-                                .background(Color.orange.opacity(0.12), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                        } label: {
+                            HStack {
+                                Image(systemName: "arrow.triangle.2.circlepath")
+                                Text("Modifier le statut")
                             }
+                            .font(.headline)
+                            .foregroundStyle(Color.emeraldGreen)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 14)
+                            .background(Color.emeraldGreen.opacity(0.12), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
                         }
                     }
                     .padding(20)

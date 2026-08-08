@@ -2,18 +2,16 @@ import SwiftUI
 
 public struct PlantingRowCard: View {
     let planting: Planting
-    var onWaterTap: (() -> Void)? = nil
     @State private var isPressed = false
 
-    public init(planting: Planting, onWaterTap: (() -> Void)? = nil) {
+    public init(planting: Planting) {
         self.planting = planting
-        self.onWaterTap = onWaterTap
     }
 
     private var germinationSummary: String {
         let days = planting.daysRemainingUntilGermination
         if planting.status == .sown {
-            return days <= 0 ? "Germination imminente !" : "\(days) j restants"
+            return days <= 0 ? "Germination imminente" : "\(days) j restants"
         }
         return ""
     }
@@ -74,31 +72,6 @@ public struct PlantingRowCard: View {
                     .foregroundStyle(planting.daysRemainingUntilGermination <= 0 ? Color.orange : accentColor)
                     .padding(.top, 1)
                 }
-
-                if planting.needsWateringToday {
-                    HStack(spacing: 4) {
-                        Image(systemName: "drop.fill")
-                            .font(.caption2)
-                        Text("Arrosage requis")
-                            .font(.caption)
-                            .fontWeight(.medium)
-                    }
-                    .foregroundStyle(Color.blue)
-                    .padding(.top, 1)
-                }
-            }
-
-            // Water action
-            if let onWaterTap = onWaterTap {
-                Button(action: onWaterTap) {
-                    Image(systemName: "drop.fill")
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(.white)
-                        .frame(width: 36, height: 36)
-                        .background(Color.blue.gradient, in: Circle())
-                        .shadow(color: .blue.opacity(0.3), radius: 6, y: 3)
-                }
-                .buttonStyle(.plain)
             }
         }
         .padding(14)

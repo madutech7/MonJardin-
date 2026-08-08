@@ -16,17 +16,13 @@ public struct DashboardView: View {
         plantings.filter { $0.status == .sown }.count
     }
 
-    private var needsWaterTodayCount: Int {
-        plantings.filter { $0.needsWateringToday }.count
-    }
-
     public var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 24) {
                     // Hero Section with Summary
                     VStack(alignment: .leading, spacing: 6) {
-                        Text("Mon Jardin 🌿")
+                        Text("Mon Jardin")
                             .font(.system(size: 34, weight: .bold, design: .rounded))
                             .foregroundStyle(
                                 LinearGradient(
@@ -36,7 +32,7 @@ public struct DashboardView: View {
                                 )
                             )
                         
-                        Text(summarySubtitleText)
+                        Text("Suivi de vos semis et cultures")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
@@ -60,14 +56,6 @@ public struct DashboardView: View {
                             subtitle: "Germination",
                             icon: "timer",
                             color: .orange
-                        )
-
-                        StatCardView(
-                            title: "Aujourd'hui",
-                            value: "\(needsWaterTodayCount)",
-                            subtitle: "Arrosage",
-                            icon: "drop.fill",
-                            color: .blue
                         )
                     }
                     .padding(.horizontal)
@@ -215,17 +203,6 @@ public struct DashboardView: View {
             .sheet(isPresented: $showingAddPlanting) {
                 AddPlantingView()
             }
-        }
-    }
-
-    private var summarySubtitleText: String {
-        let count = needsWaterTodayCount
-        if count == 0 {
-            return "Toutes vos plantes vont bien aujourd'hui."
-        } else if count == 1 {
-            return "1 plante a besoin d'eau aujourd'hui."
-        } else {
-            return "\(count) plantes nécessitent votre attention aujourd'hui."
         }
     }
 }

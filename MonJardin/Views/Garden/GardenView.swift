@@ -65,9 +65,7 @@ public struct GardenView: View {
                         } else {
                             ForEach(filteredPlantings) { planting in
                                 NavigationLink(destination: PlantingDetailView(planting: planting)) {
-                                    PlantingRowCard(planting: planting) {
-                                        planting.lastWateredDate = Date()
-                                    }
+                                    PlantingRowCard(planting: planting)
                                 }
                                 .buttonStyle(.plain)
                             }
@@ -78,7 +76,7 @@ public struct GardenView: View {
                 }
             }
             .background(Color(uiColor: .systemGroupedBackground).ignoresSafeArea())
-            .navigationTitle("Mes Plantes 🌱")
+            .navigationTitle("Mes Plantes")
             .searchable(text: $searchText, prompt: "Rechercher une plante...")
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {

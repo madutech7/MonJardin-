@@ -17,16 +17,12 @@
 		BB000009 /* GardenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000009 /* GardenView.swift */; };
 		BB000010 /* PlantingDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000010 /* PlantingDetailView.swift */; };
 		BB000011 /* AddPlantingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000011 /* AddPlantingView.swift */; };
-		BB000012 /* PlantCatalogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000012 /* PlantCatalogView.swift */; };
-		BB000013 /* CareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000013 /* CareView.swift */; };
 		BB000014 /* StatCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000014 /* StatCardView.swift */; };
 		BB000015 /* GerminationProgressGauge.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000015 /* GerminationProgressGauge.swift */; };
 		BB000016 /* StatusBadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000016 /* StatusBadgeView.swift */; };
 		BB000017 /* PlantingRowCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000017 /* PlantingRowCard.swift */; };
-		BB000018 /* PhotoGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000018 /* PhotoGalleryView.swift */; };
 		BB000019 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA000019 /* Assets.xcassets */; };
 		BB000020 /* FilterPill.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000020 /* FilterPill.swift */; };
-		BB000021 /* InfoRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000021 /* InfoRow.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,16 +38,12 @@
 		AA000009 /* GardenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GardenView.swift; sourceTree = "<group>"; };
 		AA000010 /* PlantingDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantingDetailView.swift; sourceTree = "<group>"; };
 		AA000011 /* AddPlantingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPlantingView.swift; sourceTree = "<group>"; };
-		AA000012 /* PlantCatalogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantCatalogView.swift; sourceTree = "<group>"; };
-		AA000013 /* CareView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CareView.swift; sourceTree = "<group>"; };
 		AA000014 /* StatCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatCardView.swift; sourceTree = "<group>"; };
 		AA000015 /* GerminationProgressGauge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GerminationProgressGauge.swift; sourceTree = "<group>"; };
 		AA000016 /* StatusBadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBadgeView.swift; sourceTree = "<group>"; };
 		AA000017 /* PlantingRowCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantingRowCard.swift; sourceTree = "<group>"; };
-		AA000018 /* PhotoGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoGalleryView.swift; sourceTree = "<group>"; };
 		AA000019 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AA000020 /* FilterPill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterPill.swift; sourceTree = "<group>"; };
-		AA000021 /* InfoRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoRow.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,10 +94,7 @@
 				AA000007 /* MainTabView.swift */,
 				GG000003 /* Dashboard */,
 				GG000004 /* Garden */,
-				GG000005 /* Catalog */,
-				GG000006 /* Care */,
 				GG000007 /* Components */,
-				GG000008 /* Gallery */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -152,7 +141,6 @@
 				AA000016 /* StatusBadgeView.swift */,
 				AA000017 /* PlantingRowCard.swift */,
 				AA000020 /* FilterPill.swift */,
-				AA000021 /* InfoRow.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -252,15 +240,11 @@
 				BB000009 /* GardenView.swift in Sources */,
 				BB000010 /* PlantingDetailView.swift in Sources */,
 				BB000011 /* AddPlantingView.swift in Sources */,
-				BB000012 /* PlantCatalogView.swift in Sources */,
-				BB000013 /* CareView.swift in Sources */,
 				BB000014 /* StatCardView.swift in Sources */,
 				BB000015 /* GerminationProgressGauge.swift in Sources */,
 				BB000016 /* StatusBadgeView.swift in Sources */,
 				BB000017 /* PlantingRowCard.swift in Sources */,
-				BB000018 /* PhotoGalleryView.swift in Sources */,
 				BB000020 /* FilterPill.swift in Sources */,
-				BB000021 /* InfoRow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

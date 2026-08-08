@@ -25,65 +25,63 @@ public struct GardenView: View {
 
     public var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                // Filter Pills Bar
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
-                        FilterPill(title: "Tous (\(plantings.count))", isSelected: selectedStatusFilter == nil) {
-                            withAnimation(.easeInOut) { selectedStatusFilter = nil }
-                        }
+            List {
+                // Filter Picker Section
+                Section {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 8) {
+                            FilterPill(title: "Tous (\(plantings.count))", isSelected: selectedStatusFilter == nil) {
+                                withAnimation(.easeInOut) { selectedStatusFilter = nil }
+                            }
 
-                        ForEach(PlantingStatus.allCases, id: \.self) { status in
-                            let count = plantings.filter { $0.status == status }.count
-                            if count > 0 {
-                                FilterPill(title: "\(status.rawValue) (\(count))", isSelected: selectedStatusFilter == status) {
-                                    withAnimation(.easeInOut) { selectedStatusFilter = status }
+                            ForEach(PlantingStatus.allCases, id: \.self) { status in
+                                let count = plantings.filter { $0.status == status }.count
+                                if count > 0 {
+                                    FilterPill(title: "\(status.rawValue) (\(count))", isSelected: selectedStatusFilter == status) {
+                                        withAnimation(.easeInOut) { selectedStatusFilter = status }
+                                    }
                                 }
                             }
                         }
+                        .padding(.vertical, 4)
                     }
-                    .padding(.horizontal)
-                    .padding(.vertical, 10)
+                    .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
+                    .listRowBackground(Color.clear)
                 }
-                .background(Color(uiColor: .systemGroupedBackground))
 
-                // List of Plantings
-                ScrollView {
-                    VStack(spacing: 12) {
-                        if filteredPlantings.isEmpty {
-                            VStack(spacing: 16) {
-                                Image(systemName: "magnifyingglass")
-                                    .font(.system(size: 44, weight: .light))
-                                    .foregroundStyle(.tertiary)
-                                
-                                Text("Aucune plantation trouvée")
-                                    .font(.headline)
-                                    .foregroundStyle(.secondary)
+                // Main Plantings List
+                Section {
+                    if filteredPlantings.isEmpty {
+                        ContentUnavailableView(
+                            "Aucun résultat",
+                            systemImage: "magnifyingglass",
+                            description: Text(searchText.isEmpty ? "Aucune plante disponible." : "Aucune plantation ne correspond à « \(searchText) ».")
+                        )
+                        .listRowBackground(Color.clear)
+                    } else {
+                        ForEach(filteredPlantings) { planting in
+                            NavigationLink(destination: PlantingDetailView(planting: planting)) {
+                                PlantingRowCard(planting: planting)
                             }
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 60)
-                        } else {
-                            ForEach(filteredPlantings) { planting in
-                                NavigationLink(destination: PlantingDetailView(planting: planting)) {
-                                    PlantingRowCard(planting: planting)
+                            .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                Button(role: .destructive) {
+                                    modelContext.delete(planting)
+                                } label: {
+                                    Label("Supprimer", systemImage: "trash")
                                 }
-                                .buttonStyle(.plain)
                             }
                         }
                     }
-                    .padding(.horizontal)
-                    .padding(.vertical, 12)
                 }
             }
-            .background(Color(uiColor: .systemGroupedBackground).ignoresSafeArea())
+            .listStyle(.insetGrouped)
             .navigationTitle("Mes Plantes")
             .searchable(text: $searchText, prompt: "Rechercher une plante...")
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
                     Button(action: { showingAddSheet = true }) {
-                        Image(systemName: "plus.circle.fill")
-                            .font(.system(size: 22, weight: .semibold))
-                            .foregroundStyle(Color.emeraldGreen.gradient)
+                        Image(systemName: "plus")
+                            .font(.headline)
                     }
                 }
             }

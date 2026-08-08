@@ -11,7 +11,7 @@ public struct AddPlantingView: View {
     @State private var name: String = ""
     @State private var selectedSpecies: PlantSpecies? = nil
     @State private var sownDate: Date = Date()
-    @State private var locationName: String = "Intérieur / Serre"
+    @State private var locationName: String = "Intérieur"
     @State private var notes: String = ""
     @State private var expectedDays: Int = 7
 
@@ -24,7 +24,7 @@ public struct AddPlantingView: View {
     public var body: some View {
         NavigationStack {
             Form {
-                // Photo Section
+                // Photo Picker Section
                 Section {
                     HStack {
                         Spacer()
@@ -33,38 +33,24 @@ public struct AddPlantingView: View {
                                 Image(uiImage: uiImage)
                                     .resizable()
                                     .scaledToFill()
-                                    .frame(width: 140, height: 140)
-                                    .clipShape(RoundedRectangle(cornerRadius: 16))
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 16)
-                                            .stroke(Color.green, lineWidth: 2)
-                                    )
+                                    .frame(width: 120, height: 120)
+                                    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                             } else {
                                 ZStack {
-                                    RoundedRectangle(cornerRadius: 16)
-                                        .fill(Color.green.opacity(0.08))
-                                        .frame(width: 140, height: 140)
-                                    VStack(spacing: 8) {
-                                        Image(systemName: "camera.fill")
-                                            .font(.system(size: 32))
-                                            .foregroundColor(.green.opacity(0.6))
-                                        Text("Ajouter une photo")
-                                            .font(.caption)
-                                            .foregroundColor(.secondary)
-                                    }
+                                    RoundedRectangle(cornerRadius: 16, style: .continuous)
+                                        .fill(Color(uiColor: .tertiarySystemFill))
+                                        .frame(width: 120, height: 120)
+                                    
+                                    Image(systemName: "camera.fill")
+                                        .font(.system(size: 32))
+                                        .foregroundStyle(.secondary)
                                 }
                             }
 
-                            PhotosPicker(
-                                selection: $selectedPhotoItem,
-                                matching: .images
-                            ) {
-                                Label(
-                                    selectedImageData == nil ? "Choisir une photo" : "Changer la photo",
-                                    systemImage: "photo.badge.plus"
-                                )
-                                .font(.subheadline)
-                                .foregroundColor(.green)
+                            PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
+                                Text(selectedImageData == nil ? "Ajouter une photo" : "Modifier la photo")
+                                    .font(.subheadline)
+                                    .fontWeight(.medium)
                             }
                             .onChange(of: selectedPhotoItem) { _, newItem in
                                 Task {
@@ -79,7 +65,7 @@ public struct AddPlantingView: View {
                                     selectedImageData = nil
                                     selectedPhotoItem = nil
                                 } label: {
-                                    Label("Supprimer la photo", systemImage: "trash")
+                                    Text("Supprimer")
                                         .font(.caption)
                                 }
                             }
@@ -88,12 +74,14 @@ public struct AddPlantingView: View {
                     }
                     .padding(.vertical, 8)
                 }
+                .listRowBackground(Color.clear)
 
-                Section(header: Text("Informations générales")) {
-                    TextField("Nom de la plantation", text: $name)
+                // Main Details Section
+                Section("Détails") {
+                    TextField("Nom de la plante", text: $name)
 
-                    Picker("Espèce", selection: $selectedSpecies) {
-                        Text("Aucune (Personnalisée)").tag(Optional<PlantSpecies>.none)
+                    Picker("Espèce (Optionnel)", selection: $selectedSpecies) {
+                        Text("Aucune").tag(Optional<PlantSpecies>.none)
                         ForEach(catalogSpecies) { species in
                             Text(species.name).tag(Optional(species))
                         }
@@ -112,12 +100,13 @@ public struct AddPlantingView: View {
                     Stepper("Germination estimée : \(expectedDays) j", value: $expectedDays, in: 1...120)
                 }
 
-                Section(header: Text("Notes")) {
+                // Notes Section
+                Section("Notes") {
                     TextEditor(text: $notes)
                         .frame(height: 100)
                 }
             }
-            .navigationTitle("Nouveau Semis")
+            .navigationTitle("Nouveau semis")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -125,6 +114,7 @@ public struct AddPlantingView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Enregistrer") { savePlanting() }
+                        .fontWeight(.semibold)
                         .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
             }

@@ -11,66 +11,46 @@ public struct GerminationProgressGauge: View {
         self.status = status
     }
 
-    private var gaugeColor: Color {
-        if daysRemaining <= 0 { return .orange }
-        if progress > 0.75 { return .emeraldGreen }
-        return Color(red: 0.2, green: 0.7, blue: 0.5)
-    }
-
     public var body: some View {
         ZStack {
-            // Outer glow ring
+            // Background Track
             Circle()
-                .stroke(gaugeColor.opacity(0.06), lineWidth: 14)
+                .stroke(Color.primary.opacity(0.08), lineWidth: 8)
 
-            // Track
-            Circle()
-                .stroke(Color.primary.opacity(0.06), lineWidth: 10)
-
-            // Progress arc
+            // Progress Ring
             Circle()
                 .trim(from: 0, to: status == .sown ? CGFloat(progress) : 1.0)
                 .stroke(
-                    LinearGradient(
-                        colors: [gaugeColor.opacity(0.6), gaugeColor],
-                        startPoint: .topLeading,
-                        endPoint: .bottomTrailing
-                    ),
-                    style: StrokeStyle(lineWidth: 10, lineCap: .round)
+                    daysRemaining <= 0 ? Color.orange : Color.green,
+                    style: StrokeStyle(lineWidth: 8, lineCap: .round)
                 )
                 .rotationEffect(.degrees(-90))
-                .animation(.spring(response: 1.0, dampingFraction: 0.75), value: progress)
+                .animation(.easeInOut, value: progress)
 
-            // Center content
-            VStack(spacing: 1) {
+            // Center Content
+            VStack(spacing: 2) {
                 if status == .sown {
                     if daysRemaining <= 0 {
-                        Image(systemName: "sparkles")
-                            .font(.system(size: 22, weight: .bold))
-                            .foregroundStyle(Color.orange.gradient)
+                        Image(systemName: "exclamationmark.circle.fill")
+                            .font(.system(size: 22, weight: .semibold))
+                            .foregroundStyle(.orange)
                     } else {
                         Text("\(daysRemaining)")
-                            .font(.system(size: 26, weight: .black, design: .rounded))
+                            .font(.system(size: 24, weight: .bold, design: .rounded))
                             .foregroundStyle(.primary)
+                        
                         Text(daysRemaining <= 1 ? "jour" : "jours")
-                            .font(.system(size: 9, weight: .semibold))
+                            .font(.system(size: 9, weight: .medium))
                             .foregroundStyle(.secondary)
                             .textCase(.uppercase)
-                            .tracking(0.5)
                     }
                 } else {
                     Image(systemName: "checkmark.circle.fill")
-                        .font(.system(size: 28, weight: .bold))
-                        .foregroundStyle(gaugeColor.gradient)
+                        .font(.system(size: 24, weight: .semibold))
+                        .foregroundStyle(.green)
                 }
             }
         }
-        .frame(width: 100, height: 100)
+        .frame(width: 80, height: 80)
     }
-}
-
-extension Color {
-    static let emeraldGreen = Color(red: 16/255, green: 185/255, blue: 129/255)
-    static let forestGreen = Color(red: 27/255, green: 67/255, blue: 50/255)
-    static let sageGreen = Color(red: 82/255, green: 183/255, blue: 136/255)
 }

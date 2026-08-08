@@ -14,18 +14,17 @@ public struct StatusBadgeView: View {
         case .growing:    return .blue
         case .flowering:  return .pink
         case .fruiting:   return .purple
-        case .harvested:  return .gray
+        case .harvested:  return .secondary
         }
     }
 
     public var body: some View {
         Text(status.rawValue)
-            .font(.caption)
+            .font(.caption2)
             .fontWeight(.semibold)
-            .padding(.horizontal, 10)
-            .padding(.vertical, 4)
-            .background(badgeColor.opacity(0.15))
-            .foregroundColor(badgeColor)
-            .clipShape(Capsule())
+            .padding(.horizontal, 8)
+            .padding(.vertical, 3)
+            .background(badgeColor.opacity(0.12), in: Capsule())
+            .foregroundStyle(badgeColor)
     }
 }

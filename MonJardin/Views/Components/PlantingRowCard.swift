@@ -7,7 +7,7 @@ public struct PlantingRowCard: View {
         self.planting = planting
     }
 
-    var body: some View {
+    public var body: some View {
         HStack(spacing: 14) {
             // Thumbnail or system icon
             ZStack {

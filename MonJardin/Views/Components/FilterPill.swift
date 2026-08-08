@@ -15,19 +15,10 @@ public struct FilterPill: View {
         Button(action: action) {
             Text(title)
                 .font(.subheadline)
-                .fontWeight(isSelected ? .semibold : .medium)
-                .padding(.horizontal, 16)
-                .padding(.vertical, 8)
-                .background {
-                    if isSelected {
-                        Capsule()
-                            .fill(Color.emeraldGreen.gradient)
-                            .shadow(color: Color.emeraldGreen.opacity(0.3), radius: 6, y: 3)
-                    } else {
-                        Capsule()
-                            .fill(.regularMaterial)
-                    }
-                }
+                .fontWeight(isSelected ? .semibold : .regular)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 7)
+                .background(isSelected ? Color.green : Color(uiColor: .tertiarySystemFill), in: Capsule())
                 .foregroundStyle(isSelected ? .white : .primary)
         }
         .buttonStyle(.plain)

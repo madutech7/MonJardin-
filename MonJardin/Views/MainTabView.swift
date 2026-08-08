@@ -1,6 +1,10 @@
 import SwiftUI
 import SwiftData
 
+public extension Color {
+    static let emeraldGreen = Color(red: 16/255, green: 185/255, blue: 129/255)
+}
+
 public struct MainTabView: View {
     @Environment(\.modelContext) private var modelContext
     @State private var showingAddSheet = false
@@ -28,7 +32,7 @@ public struct MainTabView: View {
                 }
                 .tag(2)
         }
-        .tint(Color.emeraldGreen)
+        .tint(.green)
         .onChange(of: selectedTab) { _, newValue in
             if newValue == 2 {
                 showingAddSheet = true

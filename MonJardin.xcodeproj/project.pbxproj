@@ -26,6 +26,7 @@
 		BB000018 /* PhotoGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000018 /* PhotoGalleryView.swift */; };
 		BB000019 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA000019 /* Assets.xcassets */; };
 		BB000020 /* FilterPill.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000020 /* FilterPill.swift */; };
+		BB000021 /* InfoRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000021 /* InfoRow.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,6 +51,7 @@
 		AA000018 /* PhotoGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoGalleryView.swift; sourceTree = "<group>"; };
 		AA000019 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AA000020 /* FilterPill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterPill.swift; sourceTree = "<group>"; };
+		AA000021 /* InfoRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoRow.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -150,6 +152,7 @@
 				AA000016 /* StatusBadgeView.swift */,
 				AA000017 /* PlantingRowCard.swift */,
 				AA000020 /* FilterPill.swift */,
+				AA000021 /* InfoRow.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -257,6 +260,7 @@
 				BB000017 /* PlantingRowCard.swift in Sources */,
 				BB000018 /* PhotoGalleryView.swift in Sources */,
 				BB000020 /* FilterPill.swift in Sources */,
+				BB000021 /* InfoRow.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

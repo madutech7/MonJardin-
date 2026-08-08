@@ -9,7 +9,7 @@ public struct DashboardView: View {
     public init() {}
 
     private var activePlantingsCount: Int {
-        plantings.filter { $0.status != .completed }.count
+        plantings.filter { $0.status != .harvested }.count
     }
 
     private var germinatingCount: Int {
@@ -17,7 +17,7 @@ public struct DashboardView: View {
     }
 
     private var needsWaterTodayCount: Int {
-        plantings.filter { $0.needsWaterToday }.count
+        plantings.filter { $0.needsWateringToday }.count
     }
 
     public var body: some View {
@@ -33,7 +33,6 @@ public struct DashboardView: View {
                             icon: "leaf.fill",
                             color: .green
                         )
-                        
                         StatCardView(
                             title: "Germination",
                             value: "\(germinatingCount)",
@@ -41,7 +40,6 @@ public struct DashboardView: View {
                             icon: "timer",
                             color: .orange
                         )
-
                         StatCardView(
                             title: "Arrosage",
                             value: "\(needsWaterTodayCount)",
@@ -52,7 +50,7 @@ public struct DashboardView: View {
                     }
                     .padding(.horizontal)
 
-                    // Germination Watchlist Section
+                    // Germination Watchlist
                     let germinatingPlantings = plantings.filter { $0.status == .sown }
                     if !germinatingPlantings.isEmpty {
                         VStack(alignment: .leading, spacing: 12) {
@@ -66,12 +64,14 @@ public struct DashboardView: View {
                                     ForEach(germinatingPlantings) { planting in
                                         NavigationLink(destination: PlantingDetailView(planting: planting)) {
                                             VStack(spacing: 10) {
+                                                let progress = planting.germinationProgress
+                                                let days = planting.daysRemainingUntilGermination
+                                                let status = planting.status
                                                 GerminationProgressGauge(
-                                                    progress: planting.germinationProgress,
-                                                    daysRemaining: planting.daysUntilGermination,
-                                                    status: planting.status
+                                                    progress: progress,
+                                                    daysRemaining: days,
+                                                    status: status
                                                 )
-                                                
                                                 Text(planting.name)
                                                     .font(.subheadline)
                                                     .fontWeight(.semibold)
@@ -89,10 +89,10 @@ public struct DashboardView: View {
                         }
                     }
 
-                    // Recent Plantings Section
+                    // Recent Plantings
                     VStack(alignment: .leading, spacing: 12) {
                         HStack {
-                            Text("Mes Plantations Récents")
+                            Text("Mes Plantations Récentes")
                                 .font(.title3)
                                 .fontWeight(.bold)
                             Spacer()

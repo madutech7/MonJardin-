@@ -22,34 +22,31 @@ public struct PlantingDetailView: View {
                             Text(planting.name)
                                 .font(.largeTitle)
                                 .fontWeight(.bold)
-                            
-                            if let species = planting.species {
-                                Text(species.category)
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
-                            }
+                            Text(planting.locationName)
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
                         }
-
                         Spacer()
-
                         StatusBadgeView(status: planting.status)
                     }
 
                     Divider()
 
                     if planting.status == .sown {
+                        let progress = planting.germinationProgress
+                        let days = planting.daysRemainingUntilGermination
+                        let status = planting.status
+
                         VStack(spacing: 12) {
                             GerminationProgressGauge(
-                                progress: planting.germinationProgress,
-                                daysRemaining: planting.daysUntilGermination,
-                                status: planting.status
+                                progress: progress,
+                                daysRemaining: days,
+                                status: status
                             )
-                            
                             Button(action: {
-                                planting.status = .germinated
-                                planting.actualGerminationDate = Date()
+                                planting.status = .sprouted
                             }) {
-                                Label("Confirmer la Germination", systemImage: "checkmark.circle.fill")
+                                Label("Confirmer les Premières Pousses", systemImage: "checkmark.circle.fill")
                                     .font(.headline)
                                     .foregroundColor(.white)
                                     .frame(maxWidth: .infinity)
@@ -78,10 +75,8 @@ public struct PlantingDetailView: View {
                         }
 
                         Menu {
-                            ForEach(PlantingStatus.allCases, id: \.self) { status in
-                                Button(status.rawValue) {
-                                    planting.status = status
-                                }
+                            ForEach(PlantingStatus.allCases, id: \.self) { s in
+                                Button(s.rawValue) { planting.status = s }
                             }
                         } label: {
                             HStack {
@@ -107,9 +102,7 @@ public struct PlantingDetailView: View {
                         Text("Journal de suivi")
                             .font(.title2)
                             .fontWeight(.bold)
-
                         Spacer()
-
                         Button(action: { showingAddLogSheet = true }) {
                             Image(systemName: "plus")
                         }
@@ -123,11 +116,20 @@ public struct PlantingDetailView: View {
                     } else {
                         ForEach(planting.logs.sorted(by: { $0.timestamp > $1.timestamp })) { log in
                             VStack(alignment: .leading, spacing: 6) {
-                                Text(log.timestamp.formatted(date: .abbreviated, time: .shortened))
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                                Text(log.noteText)
-                                    .font(.body)
+                                HStack {
+                                    Text(log.stageName)
+                                        .font(.caption)
+                                        .fontWeight(.semibold)
+                                        .foregroundColor(.green)
+                                    Spacer()
+                                    Text(log.timestamp.formatted(date: .abbreviated, time: .shortened))
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                                if !log.noteText.isEmpty {
+                                    Text(log.noteText)
+                                        .font(.body)
+                                }
                             }
                             .padding()
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -157,7 +159,7 @@ public struct PlantingDetailView: View {
                     }
                     ToolbarItem(placement: .confirmationAction) {
                         Button("Ajouter") {
-                            let log = GardenLog(noteText: newLogNote, planting: planting)
+                            let log = GardenLog(noteText: newLogNote)
                             planting.logs.append(log)
                             newLogNote = ""
                             showingAddLogSheet = false

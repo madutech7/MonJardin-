@@ -9,15 +9,25 @@ public struct PlantingRowCard: View {
         self.onWaterTap = onWaterTap
     }
 
+    private var germinationSummary: String {
+        let days = planting.daysRemainingUntilGermination
+        if planting.status == .sown {
+            if days <= 0 {
+                return "Germination attendue !"
+            } else {
+                return "~\(days) j avant germination"
+            }
+        }
+        return ""
+    }
+
     public var body: some View {
         HStack(spacing: 16) {
-            // Icon Placeholder
             ZStack {
                 Circle()
                     .fill(Color.green.opacity(0.15))
                     .frame(width: 50, height: 50)
-                
-                Image(systemName: "leaf.fill")
+                Image(systemName: planting.status.systemIcon)
                     .font(.title2)
                     .foregroundColor(.green)
             }
@@ -27,9 +37,7 @@ public struct PlantingRowCard: View {
                     Text(planting.name)
                         .font(.headline)
                         .foregroundColor(.primary)
-                    
                     Spacer()
-                    
                     StatusBadgeView(status: planting.status)
                 }
 
@@ -37,11 +45,11 @@ public struct PlantingRowCard: View {
                     .font(.subheadline)
                     .foregroundColor(.secondary)
 
-                if planting.status == .sown {
+                if planting.status == .sown && !germinationSummary.isEmpty {
                     HStack(spacing: 4) {
                         Image(systemName: "clock")
                             .font(.caption)
-                        Text(planting.germinationText)
+                        Text(germinationSummary)
                             .font(.caption)
                             .fontWeight(.medium)
                     }

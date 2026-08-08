@@ -101,6 +101,7 @@
 				GG000005 /* Catalog */,
 				GG000006 /* Care */,
 				GG000007 /* Components */,
+				GG000008 /* Gallery */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -148,6 +149,14 @@
 				AA000017 /* PlantingRowCard.swift */,
 			);
 			path = Components;
+			sourceTree = "<group>";
+		};
+		GG000008 /* Gallery */ = {
+			isa = PBXGroup;
+			children = (
+				AA000018 /* PhotoGalleryView.swift */,
+			);
+			path = Gallery;
 			sourceTree = "<group>";
 		};
 		FF000003 /* Products */ = {

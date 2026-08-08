@@ -24,6 +24,7 @@
 		BB000016 /* StatusBadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000016 /* StatusBadgeView.swift */; };
 		BB000017 /* PlantingRowCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000017 /* PlantingRowCard.swift */; };
 		BB000018 /* PhotoGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000018 /* PhotoGalleryView.swift */; };
+		BB000019 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA000019 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +47,7 @@
 		AA000016 /* StatusBadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBadgeView.swift; sourceTree = "<group>"; };
 		AA000017 /* PlantingRowCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlantingRowCard.swift; sourceTree = "<group>"; };
 		AA000018 /* PhotoGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoGalleryView.swift; sourceTree = "<group>"; };
+		AA000019 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +74,7 @@
 			children = (
 				AA000001 /* MonJardinApp.swift */,
 				AA000002 /* Info.plist */,
+				AA000019 /* Assets.xcassets */,
 				GG000001 /* Models */,
 				GG000002 /* Views */,
 			);
@@ -213,6 +216,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BB000019 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

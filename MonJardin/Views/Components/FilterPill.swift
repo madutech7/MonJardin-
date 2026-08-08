@@ -15,12 +15,21 @@ public struct FilterPill: View {
         Button(action: action) {
             Text(title)
                 .font(.subheadline)
-                .fontWeight(.medium)
+                .fontWeight(isSelected ? .semibold : .medium)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
-                .background(isSelected ? Color.green : Color(UIColor.systemGray5))
-                .foregroundColor(isSelected ? .white : .primary)
-                .clipShape(Capsule())
+                .background {
+                    if isSelected {
+                        Capsule()
+                            .fill(Color.emeraldGreen.gradient)
+                            .shadow(color: Color.emeraldGreen.opacity(0.3), radius: 6, y: 3)
+                    } else {
+                        Capsule()
+                            .fill(.regularMaterial)
+                    }
+                }
+                .foregroundStyle(isSelected ? .white : .primary)
         }
+        .buttonStyle(.plain)
     }
 }

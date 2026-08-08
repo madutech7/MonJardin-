@@ -12,25 +12,25 @@ public struct MainTabView: View {
         TabView(selection: $selectedTab) {
             DashboardView()
                 .tabItem {
-                    Label("Accueil", systemImage: "leaf.fill")
+                    Label("Accueil", systemImage: "house.fill")
                 }
                 .tag(0)
 
             GardenView()
                 .tabItem {
-                    Label("Mes Plantes", systemImage: "sprout.fill")
+                    Label("Mes Plantes", systemImage: "leaf.fill")
                 }
                 .tag(1)
 
             Color.clear
                 .tabItem {
-                    Label("Nouveau Semis", systemImage: "plus.circle.fill")
+                    Label("Nouveau", systemImage: "plus.circle.fill")
                 }
                 .tag(2)
 
             PlantCatalogView()
                 .tabItem {
-                    Label("Catalogue", systemImage: "books.vertical.fill")
+                    Label("Catalogue", systemImage: "square.grid.2x2.fill")
                 }
                 .tag(3)
 
@@ -40,7 +40,7 @@ public struct MainTabView: View {
                 }
                 .tag(4)
         }
-        .accentColor(Color(red: 16/255, green: 185/255, blue: 129/255))
+        .tint(Color.emeraldGreen)
         .onChange(of: selectedTab) { _, newValue in
             if newValue == 2 {
                 showingAddSheet = true

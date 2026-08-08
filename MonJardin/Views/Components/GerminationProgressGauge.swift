@@ -1,7 +1,7 @@
 import SwiftUI
 
 public struct GerminationProgressGauge: View {
-    let progress: Double // 0.0 to 1.0
+    let progress: Double
     let daysRemaining: Int
     let status: PlantingStatus
 
@@ -11,41 +11,57 @@ public struct GerminationProgressGauge: View {
         self.status = status
     }
 
+    private var gaugeColor: Color {
+        if daysRemaining <= 0 { return .orange }
+        if progress > 0.75 { return .emeraldGreen }
+        return Color(red: 0.2, green: 0.7, blue: 0.5)
+    }
+
     public var body: some View {
         ZStack {
-            // Track circle
+            // Outer glow ring
             Circle()
-                .stroke(Color.green.opacity(0.15), lineWidth: 10)
+                .stroke(gaugeColor.opacity(0.06), lineWidth: 14)
 
-            // Progress stroke
+            // Track
+            Circle()
+                .stroke(Color.primary.opacity(0.06), lineWidth: 10)
+
+            // Progress arc
             Circle()
                 .trim(from: 0, to: status == .sown ? CGFloat(progress) : 1.0)
                 .stroke(
-                    AngularGradient(
-                        gradient: Gradient(colors: [Color.green.opacity(0.7), Color.emeraldGreen]),
-                        center: .center
+                    LinearGradient(
+                        colors: [gaugeColor.opacity(0.6), gaugeColor],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
                     ),
                     style: StrokeStyle(lineWidth: 10, lineCap: .round)
                 )
                 .rotationEffect(.degrees(-90))
-                .animation(.spring(response: 0.8, dampingFraction: 0.8), value: progress)
+                .animation(.spring(response: 1.0, dampingFraction: 0.75), value: progress)
 
-            // Center Info
-            VStack(spacing: 2) {
+            // Center content
+            VStack(spacing: 1) {
                 if status == .sown {
-                    Text("\(daysRemaining)")
-                        .font(.system(size: 28, weight: .bold, design: .rounded))
-                        .foregroundColor(.primary)
-                    Text(daysRemaining <= 1 ? "jour restant" : "jours restants")
-                        .font(.system(size: 10, weight: .medium))
-                        .foregroundColor(.secondary)
+                    if daysRemaining <= 0 {
+                        Image(systemName: "sparkles")
+                            .font(.system(size: 22, weight: .bold))
+                            .foregroundStyle(Color.orange.gradient)
+                    } else {
+                        Text("\(daysRemaining)")
+                            .font(.system(size: 26, weight: .black, design: .rounded))
+                            .foregroundStyle(.primary)
+                        Text(daysRemaining <= 1 ? "jour" : "jours")
+                            .font(.system(size: 9, weight: .semibold))
+                            .foregroundStyle(.secondary)
+                            .textCase(.uppercase)
+                            .tracking(0.5)
+                    }
                 } else {
-                    Image(systemName: status.systemIcon)
-                        .font(.system(size: 26, weight: .bold))
-                        .foregroundColor(.green)
-                    Text(status.rawValue)
-                        .font(.system(size: 11, weight: .semibold))
-                        .foregroundColor(.secondary)
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.system(size: 28, weight: .bold))
+                        .foregroundStyle(gaugeColor.gradient)
                 }
             }
         }
@@ -55,4 +71,6 @@ public struct GerminationProgressGauge: View {
 
 extension Color {
     static let emeraldGreen = Color(red: 16/255, green: 185/255, blue: 129/255)
+    static let forestGreen = Color(red: 27/255, green: 67/255, blue: 50/255)
+    static let sageGreen = Color(red: 82/255, green: 183/255, blue: 136/255)
 }

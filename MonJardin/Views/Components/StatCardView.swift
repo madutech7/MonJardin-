@@ -16,38 +16,44 @@ public struct StatCardView: View {
     }
 
     public var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                ZStack {
-                    Circle()
-                        .fill(color.opacity(0.15))
-                        .frame(width: 36, height: 36)
-                    Image(systemName: icon)
-                        .foregroundColor(color)
-                        .font(.system(size: 16, weight: .semibold))
-                }
-                Spacer()
-                Text(title)
-                    .font(.caption)
-                    .fontWeight(.medium)
-                    .foregroundColor(.secondary)
-                    .textCase(.uppercase)
+        VStack(alignment: .leading, spacing: 12) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .fill(color.gradient.opacity(0.2))
+                    .frame(width: 42, height: 42)
+                Image(systemName: icon)
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundStyle(color)
             }
+
+            Spacer()
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(value)
-                    .font(.system(size: 26, weight: .bold, design: .rounded))
-                    .foregroundColor(.primary)
+                    .font(.system(size: 30, weight: .bold, design: .rounded))
+                    .foregroundStyle(.primary)
+                    .contentTransition(.numericText())
                 Text(subtitle)
+                    .font(.caption)
+                    .fontWeight(.medium)
+                    .foregroundStyle(.secondary)
+                Text(title)
                     .font(.caption2)
-                    .foregroundColor(.secondary)
+                    .foregroundStyle(.tertiary)
+                    .textCase(.uppercase)
+                    .tracking(0.5)
             }
         }
-        .padding(14)
-        .background(
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
-                .fill(Color(uiColor: .secondarySystemGroupedBackground))
-                .shadow(color: Color.black.opacity(0.04), radius: 8, x: 0, y: 4)
-        )
+        .padding(16)
+        .frame(maxWidth: .infinity, minHeight: 130, alignment: .leading)
+        .background {
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .fill(.regularMaterial)
+                .overlay {
+                    RoundedRectangle(cornerRadius: 20, style: .continuous)
+                        .stroke(color.opacity(0.15), lineWidth: 1)
+                }
+        }
+        .shadow(color: color.opacity(0.08), radius: 12, x: 0, y: 6)
     }
 }

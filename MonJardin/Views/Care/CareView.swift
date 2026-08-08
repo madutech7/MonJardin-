@@ -16,64 +16,78 @@ public struct CareView: View {
     public var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 20) {
+                VStack(alignment: .leading, spacing: 24) {
                     // Quick Action Hero Header
                     if !needsWaterToday.isEmpty {
-                        VStack(alignment: .leading, spacing: 14) {
+                        VStack(alignment: .leading, spacing: 16) {
                             HStack {
                                 VStack(alignment: .leading, spacing: 4) {
                                     Text("Arrosage Requis 💧")
                                         .font(.title2)
                                         .fontWeight(.bold)
-                                    Text("\(needsWaterToday.count) plantation(s) ont soif aujourd'hui.")
+                                        .foregroundStyle(.primary)
+                                    Text("\(needsWaterToday.count) plantation(s) ont besoin d'eau.")
                                         .font(.subheadline)
-                                        .foregroundColor(.secondary)
+                                        .foregroundStyle(.secondary)
                                 }
                                 Spacer()
                                 Button(action: waterAllToday) {
                                     Text("Tout Arroser")
                                         .font(.subheadline)
                                         .fontWeight(.bold)
-                                        .padding(.horizontal, 14)
-                                        .padding(.vertical, 8)
-                                        .background(Color.blue)
-                                        .foregroundColor(.white)
-                                        .cornerRadius(10)
+                                        .padding(.horizontal, 16)
+                                        .padding(.vertical, 10)
+                                        .background(Color.blue.gradient, in: Capsule())
+                                        .foregroundStyle(.white)
+                                        .shadow(color: .blue.opacity(0.3), radius: 8, y: 4)
                                 }
                             }
 
-                            VStack(spacing: 10) {
+                            VStack(spacing: 12) {
                                 ForEach(needsWaterToday) { planting in
                                     PlantingRowCard(planting: planting) {
                                         planting.lastWateredDate = Date()
-                                        try? modelContext.save()
                                     }
                                 }
                             }
                         }
-                        .padding()
-                        .background(
-                            RoundedRectangle(cornerRadius: 20)
-                                .fill(Color(uiColor: .secondarySystemGroupedBackground))
-                        )
+                        .padding(20)
+                        .background {
+                            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                                .fill(.regularMaterial)
+                                .overlay {
+                                    RoundedRectangle(cornerRadius: 24, style: .continuous)
+                                        .stroke(Color.blue.opacity(0.2), lineWidth: 1)
+                                }
+                        }
+                        .shadow(color: .blue.opacity(0.06), radius: 12, x: 0, y: 6)
                         .padding(.horizontal)
                     } else {
-                        VStack(spacing: 12) {
-                            Image(systemName: "checkmark.seal.fill")
-                                .font(.system(size: 44))
-                                .foregroundColor(.blue)
-                            Text("Toutes vos plantes sont hydratées !")
-                                .font(.headline)
-                            Text("Aucun arrosage urgent requis pour aujourd'hui.")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
+                        VStack(spacing: 14) {
+                            ZStack {
+                                Circle()
+                                    .fill(Color.blue.opacity(0.12))
+                                    .frame(width: 72, height: 72)
+                                Image(systemName: "checkmark.seal.fill")
+                                    .font(.system(size: 36, weight: .bold))
+                                    .foregroundStyle(Color.blue.gradient)
+                            }
+                            
+                            VStack(spacing: 4) {
+                                Text("Plantes hydratées ! 💧")
+                                    .font(.headline)
+                                    .foregroundStyle(.primary)
+                                Text("Aucun arrosage urgent requis pour le moment.")
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                            }
                         }
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 30)
-                        .background(
-                            RoundedRectangle(cornerRadius: 20)
-                                .fill(Color(uiColor: .secondarySystemGroupedBackground))
-                        )
+                        .padding(.vertical, 36)
+                        .background {
+                            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                                .fill(.regularMaterial)
+                        }
                         .padding(.horizontal)
                     }
 
@@ -82,19 +96,19 @@ public struct CareView: View {
                         Text("Prochains Arrosages Planifiés")
                             .font(.title3)
                             .fontWeight(.bold)
+                            .foregroundStyle(.primary)
                             .padding(.horizontal)
 
                         if upcomingWatering.isEmpty {
                             Text("Aucune autre plantation enregistrée.")
                                 .font(.subheadline)
-                                .foregroundColor(.secondary)
+                                .foregroundStyle(.secondary)
                                 .padding(.horizontal)
                         } else {
-                            VStack(spacing: 10) {
+                            VStack(spacing: 12) {
                                 ForEach(upcomingWatering) { planting in
                                     PlantingRowCard(planting: planting) {
                                         planting.lastWateredDate = Date()
-                                        try? modelContext.save()
                                     }
                                 }
                             }
@@ -104,8 +118,8 @@ public struct CareView: View {
                 }
                 .padding(.vertical)
             }
-            .navigationTitle("Arrosage & Soins")
             .background(Color(uiColor: .systemGroupedBackground).ignoresSafeArea())
+            .navigationTitle("Soins & Arrosage 💧")
         }
     }
 
@@ -113,6 +127,5 @@ public struct CareView: View {
         for planting in needsWaterToday {
             planting.lastWateredDate = Date()
         }
-        try? modelContext.save()
     }
 }

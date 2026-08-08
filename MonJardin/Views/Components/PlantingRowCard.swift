@@ -3,6 +3,7 @@ import SwiftUI
 public struct PlantingRowCard: View {
     let planting: Planting
     var onWaterTap: (() -> Void)? = nil
+    @State private var isPressed = false
 
     public init(planting: Planting, onWaterTap: (() -> Void)? = nil) {
         self.planting = planting
@@ -12,67 +13,135 @@ public struct PlantingRowCard: View {
     private var germinationSummary: String {
         let days = planting.daysRemainingUntilGermination
         if planting.status == .sown {
-            if days <= 0 {
-                return "Germination attendue !"
-            } else {
-                return "~\(days) j avant germination"
-            }
+            return days <= 0 ? "Germination imminente !" : "\(days) j restants"
         }
         return ""
     }
 
+    private var accentColor: Color {
+        switch planting.status {
+        case .sown:      return .orange
+        case .sprouted:  return .emeraldGreen
+        case .growing:   return .blue
+        case .flowering: return .pink
+        case .fruiting:  return .purple
+        case .harvested: return .gray
+        }
+    }
+
     public var body: some View {
-        HStack(spacing: 16) {
+        HStack(spacing: 14) {
+            // Photo or icon
             ZStack {
-                Circle()
-                    .fill(Color.green.opacity(0.15))
-                    .frame(width: 50, height: 50)
-                Image(systemName: planting.status.systemIcon)
-                    .font(.title2)
-                    .foregroundColor(.green)
+                if let data = planting.initialPhotoData, let img = UIImage(data: data) {
+                    Image(uiImage: img)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 56, height: 56)
+                        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                } else {
+                    RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .fill(accentColor.gradient.opacity(0.15))
+                        .frame(width: 56, height: 56)
+                    Image(systemName: planting.status.systemIcon)
+                        .font(.system(size: 22, weight: .semibold))
+                        .foregroundStyle(accentColor.gradient)
+                }
             }
 
-            VStack(alignment: .leading, spacing: 4) {
-                HStack {
+            // Content
+            VStack(alignment: .leading, spacing: 5) {
+                HStack(alignment: .firstTextBaseline) {
                     Text(planting.name)
-                        .font(.headline)
-                        .foregroundColor(.primary)
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundStyle(.primary)
                     Spacer()
-                    StatusBadgeView(status: planting.status)
+                    StatusChip(status: planting.status)
                 }
 
-                Text("Semé le \(planting.sownDate.formatted(date: .abbreviated, time: .omitted))")
+                Text(planting.locationName)
                     .font(.subheadline)
-                    .foregroundColor(.secondary)
+                    .foregroundStyle(.secondary)
 
-                if planting.status == .sown && !germinationSummary.isEmpty {
+                if planting.status == .sown {
                     HStack(spacing: 4) {
-                        Image(systemName: "clock")
-                            .font(.caption)
+                        Image(systemName: "timer")
+                            .font(.caption2)
                         Text(germinationSummary)
                             .font(.caption)
                             .fontWeight(.medium)
                     }
-                    .foregroundColor(.orange)
-                    .padding(.top, 2)
+                    .foregroundStyle(planting.daysRemainingUntilGermination <= 0 ? Color.orange : accentColor)
+                    .padding(.top, 1)
+                }
+
+                if planting.needsWateringToday {
+                    HStack(spacing: 4) {
+                        Image(systemName: "drop.fill")
+                            .font(.caption2)
+                        Text("Arrosage requis")
+                            .font(.caption)
+                            .fontWeight(.medium)
+                    }
+                    .foregroundStyle(Color.blue)
+                    .padding(.top, 1)
                 }
             }
 
+            // Water action
             if let onWaterTap = onWaterTap {
                 Button(action: onWaterTap) {
                     Image(systemName: "drop.fill")
-                        .font(.body)
-                        .foregroundColor(.blue)
-                        .padding(10)
-                        .background(Color.blue.opacity(0.1))
-                        .clipShape(Circle())
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(.white)
+                        .frame(width: 36, height: 36)
+                        .background(Color.blue.gradient, in: Circle())
+                        .shadow(color: .blue.opacity(0.3), radius: 6, y: 3)
                 }
-                .buttonStyle(PlainButtonStyle())
+                .buttonStyle(.plain)
             }
         }
-        .padding()
-        .background(Color(UIColor.secondarySystemGroupedBackground))
-        .cornerRadius(16)
-        .shadow(color: Color.black.opacity(0.04), radius: 6, x: 0, y: 2)
+        .padding(14)
+        .background {
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .fill(.regularMaterial)
+                .overlay {
+                    RoundedRectangle(cornerRadius: 20, style: .continuous)
+                        .stroke(accentColor.opacity(0.12), lineWidth: 1)
+                }
+        }
+        .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 4)
+        .scaleEffect(isPressed ? 0.97 : 1.0)
+        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: isPressed)
+    }
+}
+
+// Compact status chip
+private struct StatusChip: View {
+    let status: PlantingStatus
+
+    var color: Color {
+        switch status {
+        case .sown:      return .orange
+        case .sprouted:  return .emeraldGreen
+        case .growing:   return .blue
+        case .flowering: return .pink
+        case .fruiting:  return .purple
+        case .harvested: return .gray
+        }
+    }
+
+    var body: some View {
+        HStack(spacing: 3) {
+            Circle()
+                .fill(color)
+                .frame(width: 5, height: 5)
+            Text(status.rawValue)
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(color)
+        }
+        .padding(.horizontal, 8)
+        .padding(.vertical, 4)
+        .background(color.opacity(0.1), in: Capsule())
     }
 }

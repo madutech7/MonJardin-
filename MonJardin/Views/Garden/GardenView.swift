@@ -9,80 +9,89 @@ public struct GardenView: View {
     @State private var selectedStatusFilter: PlantingStatus? = nil
     @State private var showingAddSheet = false
 
+    public init() {}
+
     private var filteredPlantings: [Planting] {
         plantings.filter { planting in
-            let matchesSearch = searchText.isEmpty ||
+            let matchesSearch = searchText.isEmpty || 
                 planting.name.localizedCaseInsensitiveContains(searchText) ||
                 planting.locationName.localizedCaseInsensitiveContains(searchText)
-
-            let matchesStatus = selectedStatusFilter == nil || planting.status == selectedStatusFilter
-            return matchesSearch && matchesStatus
+            
+            let matchesFilter = selectedStatusFilter == nil || planting.status == selectedStatusFilter
+            
+            return matchesSearch && matchesFilter
         }
     }
 
     public var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
-                // Filter Pill Bar
+                // Filter Pills Bar
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 8) {
-                        FilterPill(title: "Tous", isSelected: selectedStatusFilter == nil) {
-                            selectedStatusFilter = nil
+                        FilterPill(title: "Tous (\(plantings.count))", isSelected: selectedStatusFilter == nil) {
+                            withAnimation(.easeInOut) { selectedStatusFilter = nil }
                         }
 
                         ForEach(PlantingStatus.allCases, id: \.self) { status in
-                            FilterPill(title: status.rawValue, isSelected: selectedStatusFilter == status) {
-                                selectedStatusFilter = status
+                            let count = plantings.filter { $0.status == status }.count
+                            if count > 0 {
+                                FilterPill(title: "\(status.rawValue) (\(count))", isSelected: selectedStatusFilter == status) {
+                                    withAnimation(.easeInOut) { selectedStatusFilter = status }
+                                }
                             }
                         }
                     }
                     .padding(.horizontal)
                     .padding(.vertical, 10)
                 }
-                .background(Color(uiColor: .secondarySystemGroupedBackground))
+                .background(Color(uiColor: .systemGroupedBackground))
 
-                // List
-                if filteredPlantings.isEmpty {
-                    VStack(spacing: 16) {
-                        Spacer()
-                        Image(systemName: "leaf.fill")
-                            .font(.system(size: 40))
-                            .foregroundColor(.secondary)
-                        Text("Aucune plantation dans cette catégorie")
-                            .font(.headline)
-                            .foregroundColor(.secondary)
-                        Spacer()
-                    }
-                } else {
-                    ScrollView {
-                        LazyVStack(spacing: 12) {
+                // List of Plantings
+                ScrollView {
+                    VStack(spacing: 12) {
+                        if filteredPlantings.isEmpty {
+                            VStack(spacing: 16) {
+                                Image(systemName: "magnifyingglass")
+                                    .font(.system(size: 44, weight: .light))
+                                    .foregroundStyle(.tertiary)
+                                
+                                Text("Aucune plantation trouvée")
+                                    .font(.headline)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 60)
+                        } else {
                             ForEach(filteredPlantings) { planting in
-                                NavigationLink(value: planting) {
-                                    PlantingRowCard(planting: planting)
+                                NavigationLink(destination: PlantingDetailView(planting: planting)) {
+                                    PlantingRowCard(planting: planting) {
+                                        planting.lastWateredDate = Date()
+                                    }
                                 }
-                                .buttonStyle(PlainButtonStyle())
+                                .buttonStyle(.plain)
                             }
                         }
-                        .padding()
                     }
+                    .padding(.horizontal)
+                    .padding(.vertical, 12)
                 }
             }
-            .navigationTitle("Mes Plantations")
+            .background(Color(uiColor: .systemGroupedBackground).ignoresSafeArea())
+            .navigationTitle("Mes Plantes 🌱")
             .searchable(text: $searchText, prompt: "Rechercher une plante...")
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
+                ToolbarItem(placement: .primaryAction) {
                     Button(action: { showingAddSheet = true }) {
-                        Image(systemName: "plus")
+                        Image(systemName: "plus.circle.fill")
+                            .font(.system(size: 22, weight: .semibold))
+                            .foregroundStyle(Color.emeraldGreen.gradient)
                     }
                 }
-            }
-            .navigationDestination(for: Planting.self) { planting in
-                PlantingDetailView(planting: planting)
             }
             .sheet(isPresented: $showingAddSheet) {
                 AddPlantingView()
             }
-            .background(Color(uiColor: .systemGroupedBackground))
         }
     }
 }

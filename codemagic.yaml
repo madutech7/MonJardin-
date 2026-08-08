@@ -11,17 +11,26 @@ workflows:
         script: |
           ls -la
           xcodebuild -list -project MonJardin.xcodeproj
-      - name: Build iOS Application (Simulator & Unsigned Release)
+      - name: Build iOS Application for iPhone OS
         script: |
           xcodebuild build \
             -project MonJardin.xcodeproj \
             -scheme MonJardin \
-            -sdk iphonesimulator \
+            -sdk iphoneos \
             -configuration Release \
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO
+      - name: Package IPA File
+        script: |
+          APP_PATH=$(find $HOME/Library/Developer/Xcode/DerivedData -name "MonJardin.app" | head -n 1)
+          echo "Found app at: $APP_PATH"
+          mkdir -p Payload
+          cp -R "$APP_PATH" Payload/
+          zip -r MonJardin.ipa Payload
     artifacts:
+      - "*.ipa"
       - $HOME/Library/Developer/Xcode/DerivedData/**/Build/Products/**/*.app
       - $HOME/Library/Developer/Xcode/DerivedData/**/Build/Products/**/*.dSYM
+
 

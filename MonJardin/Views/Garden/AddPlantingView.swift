@@ -16,8 +16,10 @@ public struct AddPlantingView: View {
     @State private var expectedDays: Int = 7
 
     // Photo
-    @State private var selectedPhotoItem: PhotosPickerItem? = nil
     @State private var selectedImageData: Data? = nil
+    @State private var showingPhotoOptions = false
+    @State private var showingImagePicker = false
+    @State private var imagePickerSource: ImagePicker.SourceType = .photoLibrary
 
     public init() {}
 
@@ -47,23 +49,33 @@ public struct AddPlantingView: View {
                                 }
                             }
 
-                            PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
+                            Button(action: {
+                                showingPhotoOptions = true
+                            }) {
                                 Text(selectedImageData == nil ? "Ajouter une photo" : "Modifier la photo")
                                     .font(.subheadline)
                                     .fontWeight(.medium)
                             }
-                            .onChange(of: selectedPhotoItem) { _, newItem in
-                                Task {
-                                    if let data = try? await newItem?.loadTransferable(type: Data.self) {
-                                        selectedImageData = data
-                                    }
+                            .confirmationDialog("Choisir une photo", isPresented: $showingPhotoOptions, titleVisibility: .visible) {
+                                Button("Prendre une photo") {
+                                    imagePickerSource = .camera
+                                    showingImagePicker = true
+                                }
+                                Button("Choisir depuis la galerie") {
+                                    imagePickerSource = .photoLibrary
+                                    showingImagePicker = true
+                                }
+                                Button("Annuler", role: .cancel) { }
+                            }
+                            .sheet(isPresented: $showingImagePicker) {
+                                ImagePicker(sourceType: imagePickerSource) { data in
+                                    selectedImageData = data
                                 }
                             }
 
                             if selectedImageData != nil {
                                 Button(role: .destructive) {
                                     selectedImageData = nil
-                                    selectedPhotoItem = nil
                                 } label: {
                                     Text("Supprimer")
                                         .font(.caption)

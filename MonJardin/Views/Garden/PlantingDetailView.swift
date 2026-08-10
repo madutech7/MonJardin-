@@ -20,8 +20,8 @@ public struct PlantingDetailView: View {
                 Section {
                     Image(uiImage: uiImage)
                         .resizable()
-                        .scaledToFill()
-                        .frame(height: 220)
+                        .scaledToFit()
+                        .frame(maxHeight: 350)
                         .frame(maxWidth: .infinity)
                         .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                         .listRowInsets(EdgeInsets())
